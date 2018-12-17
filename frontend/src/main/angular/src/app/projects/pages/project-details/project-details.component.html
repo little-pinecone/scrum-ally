@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <h2 class="mb-5 mt-4">Project details</h2>
+  <div *ngIf="project">
+    <div class="card text-center">
+      <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/edit-project/{{project.id}}">Edit</a>
+          </li>
+          <li class="nav-item">
+            <a [routerLink]="" class="nav-link text-danger" (click)="confirmDeletion(project)">Delete</a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{project.name}}</h5>
+        <p class="card-text">{{project.description}}</p>
+      </div>
+    </div>
+    <app-tasks-table
+      [project]="project">
+    </app-tasks-table>
+  </div>
+</div>

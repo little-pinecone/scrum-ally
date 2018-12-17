@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  <h2 class="mb-5 mt-4">Task details</h2>
+  <div *ngIf="task">
+    <div class="card text-center">
+      <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/edit-task/{{task.id}}">Edit</a>
+          </li>
+          <li class="nav-item">
+            <a [routerLink]="" class="nav-link text-danger" (click)="confirmDeletion(task)">Delete</a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{task.name}}</h5>
+        <p class="card-text">{{task.description}}</p>
+      </div>
+    </div>
+  </div>
+</div>

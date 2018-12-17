@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <h2 *ngIf="task.id == null" class="mb-5 mt-4">New task</h2>
+  <h2 *ngIf="task.id != null" class="mb-5 mt-4">Edit task</h2>
+
+  <form>
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input id="name" class="form-control" type="text"
+        placeholder="Name" [(ngModel)]="task.name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" class="form-control" type="text" rows="3"
+        placeholder="Description" [(ngModel)]="task.description" name="description">
+      </textarea>
+    </div>
+    <a *ngIf="task.id == null" class="btn btn-success text-white"
+      (click)="saveTask(task)">
+      <i class="material-icons">save</i>
+      <span class="ml-1">Save</span>
+    </a>
+    <a *ngIf="task.id != null" class="btn btn-success text-white"
+      (click)="updateTask(task)">
+      <i class="material-icons">edit</i>
+      <span class="ml-1">Save changes</span>
+    </a>
+  </form>
+</div>

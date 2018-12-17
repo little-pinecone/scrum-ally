@@ -1,0 +1,21 @@
+<div class="dropdown">
+  <button aria-expanded="false" aria-haspopup="true"
+  class="btn btn-outline my-no" data-toggle="dropdown" type="button">
+  <i class="material-icons">more_vert</i>
+  </button>
+  <div aria-labelledby="cardTableDrop2" class="dropdown-menu dropdown-menu-right">
+    <a routerLink="/task-details/{{task.id}}" class="dropdown-item">
+      <i class="material-icons action-icon">open_in_new</i>
+      Show
+    </a>
+    <a routerLink="/edit-task/{{task.id}}" class="dropdown-item">
+      <i class="material-icons action-icon">edit</i>
+      Edit
+    </a>
+    <div class="dropdown-divider"></div>
+    <a [routerLink]="" class="dropdown-item text-danger" (click)="confirmDeletion(task)">
+      <i class="material-icons action-icon">remove_circle_outline</i>
+      Delete
+    </a>
+  </div>
+</div>

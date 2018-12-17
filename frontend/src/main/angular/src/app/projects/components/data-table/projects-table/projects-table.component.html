@@ -1,0 +1,29 @@
+<div class="card">
+  <app-projects-table-header></app-projects-table-header>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="page">
+        <tr *ngFor="let project of page.content">
+          <td><a routerLink="/project-details/{{project.id}}">{{project.name}}</a></td>
+          <td class="pr-0 pl-0 text-right">
+            <app-projects-table-actions
+              [project]="project"
+              (projectDeleteEvent)="updateProjectsList()">
+            </app-projects-table-actions>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  <hr class="my-no w-100">
+  <app-custom-pagination
+    [page]="page"
+    (nextPageEvent)="getNextPage()"
+    (previousPageEvent)="getPreviousPage()"
+    (pageSizeEvent)="getPageInNewSize($event)">
+  </app-custom-pagination>
+</div>

@@ -1,0 +1,31 @@
+<div class="card mt-4">
+  <app-tasks-table-header
+    [project]="project">
+  </app-tasks-table-header>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col" class="text-right">Actions</th>
+      </tr>
+    </thead>
+      <tbody *ngIf="page">
+        <tr *ngFor="let task of page.content">
+          <td><a routerLink="/task-details/{{task.id}}">{{task.name}}</a></td>
+          <td class="pr-0 pl-0 text-right">
+            <app-tasks-table-actions
+            [task]="task"
+            (taskDeleteEvent)="updateTasksList()">
+          </app-tasks-table-actions>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="my-no w-100">
+  <app-custom-pagination
+    [page]="page"
+    (nextPageEvent)="getNextPage()"
+    (previousPageEvent)="getPreviousPage()"
+    (pageSizeEvent)="getPageInNewSize($event)">
+  </app-custom-pagination>
+</div>

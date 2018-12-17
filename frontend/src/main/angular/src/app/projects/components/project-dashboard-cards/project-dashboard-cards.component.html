@@ -1,0 +1,12 @@
+<div *ngFor="let project of projects" class="card">
+  <div class="card-header">
+    Project summary
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{project.name}}</h5>
+    <p class="card-text">{{project.description}}</p>
+    <a routerLink="/project-details/{{project.id}}" class="btn btn-primary">
+      View project details
+    </a>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <h2 *ngIf="project.id == null" class="mb-5 mt-4">New project</h2>
+  <h2 *ngIf="project.id != null" class="mb-5 mt-4">Edit project</h2>
+
+  <form>
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input id="name" class="form-control" type="text"
+        placeholder="Name" [(ngModel)]="project.name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" class="form-control" type="text" rows="3"
+        placeholder="Description" [(ngModel)]="project.description" name="description">
+      </textarea>
+    </div>
+    <a *ngIf="project.id == null" class="btn btn-success text-white"
+      (click)="saveProject(project)">
+      <i class="material-icons">save</i>
+      <span class="ml-1">Save</span>
+    </a>
+    <a *ngIf="project.id != null" class="btn btn-success text-white"
+      (click)="updateProject(project)">
+      <i class="material-icons">edit</i>
+      <span class="ml-1">Save changes</span>
+    </a>
+  </form>
+</div>
