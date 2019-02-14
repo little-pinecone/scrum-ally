@@ -62,8 +62,8 @@ $ ng test
 
 ## Built With
 
-* [Spring Boot 2.0.3](https://start.spring.io/)
-* [Angular 6](https://angular.io/)
+* [Spring Boot 2.1.2](https://start.spring.io/)
+* [Angular 7](https://angular.io/)
 * [Maven](https://maven.apache.org/)
 * [frontend-maven-plugin](https://github.com/eirslett/frontend-maven-plugin)
 * [Daemonite's Material UI](https://daemonite.github.io/material/)

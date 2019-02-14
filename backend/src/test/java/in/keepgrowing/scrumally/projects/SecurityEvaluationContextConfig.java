@@ -1,4 +1,4 @@
-package in.keepgrowing.scrumally.config;
+package in.keepgrowing.scrumally.projects;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

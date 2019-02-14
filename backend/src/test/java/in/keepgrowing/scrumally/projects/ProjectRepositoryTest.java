@@ -1,6 +1,5 @@
 package in.keepgrowing.scrumally.projects;
 
-import in.keepgrowing.scrumally.config.SecurityEvaluationContextConfig;
 import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.projects.model.ProjectMember;
 import in.keepgrowing.scrumally.projects.model.ProjectRole;

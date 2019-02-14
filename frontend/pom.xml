@@ -23,8 +23,8 @@
 
 				<configuration>
 					<workingDirectory>src/main/angular</workingDirectory>
-					<nodeVersion>v8.11.3</nodeVersion>
-					<npmVersion>6.2.0</npmVersion>
+					<nodeVersion>v10.15.0</nodeVersion>
+					<npmVersion>6.4.1</npmVersion>
 				</configuration>
 
 				<executions>
