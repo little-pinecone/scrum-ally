@@ -26,5 +26,10 @@ public class MvcConfiguration implements WebMvcConfigurer {
                                 : new ClassPathResource("/static/index.html");
                     }
                 });
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }
