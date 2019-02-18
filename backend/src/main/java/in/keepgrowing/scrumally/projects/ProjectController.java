@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/projects")
+@RequestMapping(value = "api/projects", produces = "application/json")
 public class ProjectController {
 
     private ProjectService projectService;
