@@ -1,7 +1,6 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 
 import { Page } from '../../../pagination/page';
-import { Project } from '../../../projects/project';
 
 @Component({
   selector: 'app-custom-pagination',

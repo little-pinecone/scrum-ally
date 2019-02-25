@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Page } from '../../pagination/page';
 import { Pageable } from '../../pagination/pageable';
-import { ProjectDataService } from '../../projects/services/project-data.service';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomPaginationService {
 
-  constructor(private projectDataService: ProjectDataService) { }
+  constructor() { }
 
   public getNextPage(page: Page<any>): Pageable {
     if(!page.last) {
