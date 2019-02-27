@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 import { Project } from '../../../projects/project';
 import { Page } from '../../../pagination/page';
 import { Task } from '../../task';
+import { SortableColumn } from 'src/app/sorting/sortable-column';
 
 @Component({selector: 'app-tasks-table-header', template: ''})
 class TasksTableHeaderComponent {
@@ -16,6 +17,11 @@ class TasksTableHeaderComponent {
 @Component({selector: 'app-tasks-table-actions', template: ''})
 class TasksTableActionsComponent {
   @Input() task: Task;
+}
+
+@Component({selector: 'app-sortable-headers', template: ''})
+class SortableHeadersComponent {
+  @Input() sortableColumns: Array<SortableColumn>;
 }
 
 @Component({selector: 'app-custom-pagination', template: ''})
@@ -33,6 +39,7 @@ describe('TasksTableComponent', () => {
         TasksTableComponent,
         TasksTableHeaderComponent,
         TasksTableActionsComponent,
+        SortableHeadersComponent,
         CustomPaginationComponent
       ],
       imports: [

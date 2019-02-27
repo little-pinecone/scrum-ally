@@ -1,0 +1,20 @@
+<th
+  scope="col" *ngFor="let column of sortableColumns"
+  (click)="sort(column)">
+  {{column.title}}
+  <span *ngIf="column.direction != null">
+    <span *ngIf="column.direction=='asc'; then sortAscending else sortDescending"></span>
+  </span>
+</th>
+
+<ng-template #sortDescending>
+  <i class="material-icons">
+    arrow_drop_down
+  </i>
+</ng-template>
+
+<ng-template #sortAscending>
+  <i class="material-icons">
+    arrow_drop_up
+  </i>
+</ng-template>

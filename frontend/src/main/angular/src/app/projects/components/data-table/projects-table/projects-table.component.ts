@@ -5,6 +5,7 @@ import { Page } from '../../../../pagination/page';
 import { Pageable } from '../../../../pagination/pageable';
 import { ProjectDataService } from '../../../services/project-data.service';
 import { CustomPaginationService } from '../../../../pagination/services/custom-pagination.service';
+import { SortableColumn } from 'src/app/sorting/sortable-column';
 
 @Component({
   selector: 'app-projects-table',
@@ -13,6 +14,9 @@ import { CustomPaginationService } from '../../../../pagination/services/custom-
 })
 export class ProjectsTableComponent implements OnInit {
   page: Page<Project> = new Page();
+  sortableColumns: Array<SortableColumn> = [
+    new SortableColumn('name', 'Name', 'asc')
+  ];
 
   constructor(
     private projectDataService: ProjectDataService,
@@ -24,8 +28,27 @@ export class ProjectsTableComponent implements OnInit {
   }
 
   private getData(): void {
-    this.projectDataService.getPage(this.page.pageable)
+    this.projectDataService.getPage(this.page.pageable, this.getSortableColumn())
     .subscribe(page => this.page = page);
+  }
+
+  private getSortableColumn(): SortableColumn {
+    return this.sortableColumns.find(
+      column => column.direction != null
+    );
+  }
+
+  private sort(sortableColumn: SortableColumn): void {
+    this.clearPreviousSorting(sortableColumn);
+    this.getData();
+  }
+
+  private clearPreviousSorting(sortableColumn: SortableColumn) {
+    this.sortableColumns.filter(
+      column => column != sortableColumn
+    ).forEach(
+      column => column.direction = null
+    );
   }
 
   public getNextPage(): void {

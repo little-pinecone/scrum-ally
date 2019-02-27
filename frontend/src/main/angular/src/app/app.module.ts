@@ -35,6 +35,7 @@ import { TasksTableActionsComponent } from './tasks/components/tasks-table-actio
 import { TasksTableHeaderComponent } from './tasks/components/tasks-table-header/tasks-table-header.component';
 import { TaskDetailsComponent } from './tasks/pages/task-details/task-details.component';
 import { LoginComponent } from './auth/components/login/login.component';
+import { SortableHeadersComponent } from './sorting/components/sortable-headers/sortable-headers.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { LoginComponent } from './auth/components/login/login.component';
     TasksTableHeaderComponent,
     TaskDetailsComponent,
     LoginComponent,
+    SortableHeadersComponent,
   ],
   imports: [
     BrowserModule,

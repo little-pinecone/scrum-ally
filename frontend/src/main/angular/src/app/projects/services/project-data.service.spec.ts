@@ -7,6 +7,7 @@ import { Page } from '../../pagination/page';
 import { Pageable } from '../../pagination/pageable';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment.prod';
+import { SortableColumn } from 'src/app/sorting/sortable-column';
 
 describe('ProjectDataService', () => {
   let injector: TestBed;
@@ -19,6 +20,7 @@ describe('ProjectDataService', () => {
   ];
   let page: Page<Project> = new Page();
   let pageable: Pageable = new Pageable();
+  let sortableColumn: SortableColumn = null;
   let paginatedProjects = {
     "content": [
       {
@@ -91,7 +93,7 @@ describe('ProjectDataService', () => {
   });
 
   it('should retrieve default page with paginated projects', () => {
-    service.getPage(pageable).subscribe((projects: any) => {
+    service.getPage(pageable, sortableColumn).subscribe((projects: any) => {
       expect(projects).toEqual(paginatedProjects);
     });
 
@@ -103,7 +105,7 @@ describe('ProjectDataService', () => {
   it('should retrieve page with paginated projects', () => {
     pageable.pageNumber = 1;
     pageable.pageSize = 4
-    service.getPage(pageable).subscribe((projects: any) => {
+    service.getPage(pageable, sortableColumn).subscribe((projects: any) => {
       expect(projects).toEqual(paginatedProjects);
     });
 

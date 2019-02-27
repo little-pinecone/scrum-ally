@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Project } from '../../projects/project';
 import { Page } from '../../pagination/page';
 import { Pageable} from '../../pagination/pageable';
+import { SortableColumn } from 'src/app/sorting/sortable-column';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -29,13 +30,22 @@ export class TaskDataService {
     }
   }
 
-  public getPage(projectId: number, pageable: Pageable): Observable<Page<Task>> {
+  public getPage(projectId: number, pageable: Pageable, sortableColumn: SortableColumn)
+  : Observable<Page<Task>> {
     let url = this.tasksUrl
     + '?page=' + pageable.pageNumber
     + '&size=' + pageable.pageSize
-    + '&sort=id'
+    + this.getSortParameters(sortableColumn)
     + '&project-id=' + projectId;
     return this.http.get<Page<Task>>(url, httpOptions);
+  }
+
+  private getSortParameters(sortableColumn: SortableColumn): string {
+    let sortParams: string = '&sort=id';
+    if(sortableColumn != null) {
+      sortParams = '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
+    }
+    return sortParams;
   }
 
   public findById(id: number): Observable<Task> {

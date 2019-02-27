@@ -5,7 +5,10 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">Name</th>
+        <app-sortable-headers
+          [sortableColumns]="sortableColumns"
+          (sortEvent)="sort($event)">
+        </app-sortable-headers>
         <th scope="col" class="text-right">Actions</th>
       </tr>
     </thead>

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Observable} from 'rxjs';
 
 import { Project } from '../project' ;
 import { Page } from '../../pagination/page' ;
 import { Pageable } from '../../pagination/pageable' ;
+import { SortableColumn } from '../../sorting/sortable-column' ;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -31,12 +31,21 @@ export class ProjectDataService {
     return this.http.get<Page<Project>>(this.projectsUrl, httpOptions);
   }
 
-  public getPage(pageable: Pageable): Observable<Page<Project>> {
+  public getPage(pageable: Pageable, sortableColumn: SortableColumn)
+  : Observable<Page<Project>> {
     let url = this.projectsUrl
     + '?page=' + pageable.pageNumber
     + '&size=' + pageable.pageSize
-    + '&sort=id';
+    + this.getSortParameters(sortableColumn)
     return this.http.get<Page<Project>>(url, httpOptions);
+  }
+
+  private getSortParameters(sortableColumn: SortableColumn): string {
+    let sortParams: string = '&sort=id';
+    if(sortableColumn != null) {
+      sortParams = '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
+    }
+    return sortParams;
   }
 
   public findById(id: number): Observable<Project> {

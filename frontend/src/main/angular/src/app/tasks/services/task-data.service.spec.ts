@@ -6,6 +6,7 @@ import { Task } from '../task';
 import { environment } from '../../../environments/environment';
 import { Page } from '../../pagination/page';
 import { Pageable } from '../../pagination/pageable';
+import { SortableColumn } from 'src/app/sorting/sortable-column';
 
 describe('TaskDataService', () => {
   let injector: TestBed;
@@ -13,6 +14,7 @@ describe('TaskDataService', () => {
   let httpMock: HttpTestingController;
   let page: Page<Task> = new Page();
   let pageable: Pageable = new Pageable();
+  let sortableColumn: SortableColumn = null;
   let apiTasksUrl = environment.apiUrl + '/tasks';
   const expectedTask = {
     "name": "task",
@@ -85,7 +87,7 @@ describe('TaskDataService', () => {
     }
     pageable.pageNumber = 0;
     pageable.pageSize = 4
-    service.getPage(1, pageable).subscribe((tasks: any) => {
+    service.getPage(1, pageable, sortableColumn).subscribe((tasks: any) => {
       expect(tasks).toEqual(paginatedTasks);
     });
 
