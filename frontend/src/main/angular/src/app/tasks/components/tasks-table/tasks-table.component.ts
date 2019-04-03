@@ -39,7 +39,7 @@ export class TasksTableComponent implements OnInit {
     );
   }
 
-  private sort(sortableColumn: SortableColumn): void {
+  public sort(sortableColumn: SortableColumn): void {
     this.clearPreviousSorting(sortableColumn);
     this.getData();
   }
