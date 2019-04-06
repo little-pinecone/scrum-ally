@@ -4,7 +4,6 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 import { Task } from '../task';
 import { Observable } from 'rxjs';
-import { Project } from '../../projects/project';
 import { Page } from '../../pagination/page';
 import { Pageable} from '../../pagination/pageable';
 import { SortableColumn } from 'src/app/sorting/sortable-column';
@@ -41,11 +40,10 @@ export class TaskDataService {
   }
 
   private getSortParameters(sortableColumn: SortableColumn): string {
-    let sortParams: string = '&sort=id';
-    if(sortableColumn != null) {
-      sortParams = '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
+    if(sortableColumn == null) {
+      return '&sort=id';
     }
-    return sortParams;
+    return '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
   }
 
   public findById(id: number): Observable<Task> {

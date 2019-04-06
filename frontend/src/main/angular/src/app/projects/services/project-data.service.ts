@@ -41,11 +41,10 @@ export class ProjectDataService {
   }
 
   private getSortParameters(sortableColumn: SortableColumn): string {
-    let sortParams: string = '&sort=id';
-    if(sortableColumn != null) {
-      sortParams = '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
+    if(sortableColumn == null) {
+      return '&sort=id';
     }
-    return sortParams;
+    return '&sort=' + sortableColumn.name + ',' + sortableColumn.direction;
   }
 
   public findById(id: number): Observable<Project> {

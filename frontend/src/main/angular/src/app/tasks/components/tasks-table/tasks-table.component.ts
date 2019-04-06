@@ -6,6 +6,7 @@ import { Page } from '../../../pagination/page';
 import { Pageable } from '../../../pagination/pageable';
 import { Project } from '../../../projects/project';
 import { SortableColumn } from 'src/app/sorting/sortable-column';
+import {CustomSortingService} from "../../../sorting/services/custom-sorting.service";
 
 @Component({
   selector: 'app-tasks-table',
@@ -13,6 +14,7 @@ import { SortableColumn } from 'src/app/sorting/sortable-column';
   styleUrls: ['./tasks-table.component.scss']
 })
 export class TasksTableComponent implements OnInit {
+
   page: Page<Task> = new Page();
   sortableColumns: Array<SortableColumn> = [
     new SortableColumn('name', 'Name', 'asc')
@@ -21,7 +23,8 @@ export class TasksTableComponent implements OnInit {
 
   constructor(
     private taskDataService: TaskDataService,
-    private paginationService: CustomPaginationService
+    private paginationService: CustomPaginationService,
+    private sortingService: CustomSortingService
   ) { }
 
   ngOnInit() {
@@ -29,27 +32,14 @@ export class TasksTableComponent implements OnInit {
   }
 
   private getData(): void {
-    this.taskDataService.getPage(this.project.id, this.page.pageable, this.getSortableColumn())
+    let column = this.sortingService.getSortableColumn(this.sortableColumns);
+    this.taskDataService.getPage(this.project.id, this.page.pageable, column)
     .subscribe(page => this.page = page);
   }
 
-  private getSortableColumn(): SortableColumn {
-    return this.sortableColumns.find(
-      column => column.direction != null
-    );
-  }
-
   public sort(sortableColumn: SortableColumn): void {
-    this.clearPreviousSorting(sortableColumn);
+    this.sortingService.clearPreviousSorting(sortableColumn, this.sortableColumns);
     this.getData();
-  }
-
-  private clearPreviousSorting(sortableColumn: SortableColumn) {
-    this.sortableColumns.filter(
-      column => column != sortableColumn
-    ).forEach(
-      column => column.direction = null
-    );
   }
 
   public getNextPage(): void {
