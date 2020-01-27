@@ -3,7 +3,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProjectsTableActionsComponent } from './projects-table-actions.component';
-import { Project } from '../../../project';
 import { ModalDialogModule } from 'ngx-modal-dialog';
 import { ModalDialogInstanceService } from 'ngx-modal-dialog/src/modal-dialog-instance.service';
 

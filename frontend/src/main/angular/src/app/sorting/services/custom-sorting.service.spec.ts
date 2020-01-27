@@ -6,10 +6,7 @@ import {SortableColumn} from "../sortable-column";
 describe('CustomSortingService', () => {
   let injector: TestBed;
   let service: CustomSortingService;
-  let sortableColumns: Array<SortableColumn> = [
-    new SortableColumn('id', 'Id', null),
-    new SortableColumn('name', 'Name', 'asc')
-  ];
+  let sortableColumns: Array<SortableColumn>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -17,6 +14,10 @@ describe('CustomSortingService', () => {
     });
     injector = getTestBed();
     service = injector.get(CustomSortingService);
+    sortableColumns = [
+      new SortableColumn('id', 'Id', null),
+      new SortableColumn('name', 'Name', 'asc')
+    ];
   });
 
   it('should be created', () => {

@@ -1,14 +1,14 @@
-import { TestBed, getTestBed, inject } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { CustomPaginationService } from './custom-pagination.service';
-import { Page } from '../../pagination/page';
-import { Pageable } from '../../pagination/pageable';
+import { Page } from '../page';
+import { Pageable } from '../pageable';
 
 describe('CustomPaginationService', () => {
   let injector: TestBed;
   let service: CustomPaginationService;
-  let page: Page<any> = new Page();
+  let page: Page<any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -17,6 +17,7 @@ describe('CustomPaginationService', () => {
     });
     injector = getTestBed();
     service = injector.get(CustomPaginationService);
+    page = new Page();
   });
 
   it('should be created', () => {

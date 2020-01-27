@@ -1,4 +1,4 @@
-import { TestBed, inject, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { environment } from '../../../environments/environment';
@@ -12,16 +12,6 @@ describe('TokenService', () => {
   let service: TokenService;
   let httpMock: HttpTestingController;
   let apiUrl = environment.apiUrl;
-  let HttpResponseMock: HttpResponse<any> = {
-    body: null,
-    type: null,
-    clone:null,
-    status: 200,
-    statusText: null,
-    url: null,
-    ok: true,
-    headers: new HttpHeaders({ 'authorization': 'bearer token' })
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,6 +36,17 @@ describe('TokenService', () => {
     .subscribe((res: HttpResponse<any>) => {
       expect(res.headers.get('authorization')).toEqual('bearer token');
     });
+
+    let HttpResponseMock: HttpResponse<any> = {
+      body: null,
+      type: null,
+      clone:null,
+      status: 200,
+      statusText: null,
+      url: null,
+      ok: true,
+      headers: new HttpHeaders({ 'authorization': 'bearer token' })
+    };
 
     const req = httpMock.expectOne(apiUrl + '/login');
     expect(req.request.method).toBe("POST");

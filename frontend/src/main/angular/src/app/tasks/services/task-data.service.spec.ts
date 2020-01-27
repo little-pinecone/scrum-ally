@@ -1,27 +1,20 @@
-import { TestBed, inject, getTestBed } from '@angular/core/testing';
+import {TestBed, inject, getTestBed} from '@angular/core/testing';
 
-import { TaskDataService } from './task-data.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Task } from '../task';
-import { environment } from '../../../environments/environment';
-import { Page } from '../../pagination/page';
-import { Pageable } from '../../pagination/pageable';
-import { SortableColumn } from 'src/app/sorting/sortable-column';
+import {TaskDataService} from './task-data.service';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {Task} from '../task';
+import {environment} from '../../../environments/environment';
+import {Pageable} from '../../pagination/pageable';
+import {SortableColumn} from 'src/app/sorting/sortable-column';
 
 describe('TaskDataService', () => {
   let injector: TestBed;
   let service: TaskDataService;
   let httpMock: HttpTestingController;
-  let page: Page<Task> = new Page();
-  let pageable: Pageable = new Pageable();
-  let sortableColumn: SortableColumn = null;
-  let apiTasksUrl = environment.apiUrl + '/tasks';
-  const expectedTask = {
-    "name": "task",
-    "description": "",
-    "id": 1,
-    "projectId" :1
-  };
+  let pageable: Pageable;
+  let sortableColumn: SortableColumn;
+  let apiTasksUrl: String;
+  let expectedTask: Task;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -31,6 +24,15 @@ describe('TaskDataService', () => {
     injector = getTestBed();
     service = injector.get(TaskDataService);
     httpMock = injector.get(HttpTestingController);
+    pageable = new Pageable();
+    sortableColumn = null;
+    apiTasksUrl = environment.apiUrl + '/tasks';
+    expectedTask = {
+      "name": "task",
+      "description": "",
+      "id": 1,
+      "projectId": 1
+    };
   });
 
   afterEach(() => {
@@ -84,9 +86,9 @@ describe('TaskDataService', () => {
       "numberOfElements": 1,
       "size": 4,
       "number": 0
-    }
+    };
     pageable.pageNumber = 0;
-    pageable.pageSize = 4
+    pageable.pageSize = 4;
     service.getPage(1, pageable, sortableColumn).subscribe((tasks: any) => {
       expect(tasks).toEqual(paginatedTasks);
     });
@@ -113,7 +115,7 @@ describe('TaskDataService', () => {
 
     const req = httpMock.expectOne(`${apiTasksUrl}/100`);
     expect(req.request.method).toBe('GET');
-    req.flush({ status: 404, statusText: 'Not Found' });
+    req.flush({status: 404, statusText: 'Not Found'});
   });
 
   it('should update a task', () => {
@@ -135,11 +137,11 @@ describe('TaskDataService', () => {
 
     const req = httpMock.expectOne(`${apiTasksUrl}/100`);
     expect(req.request.method).toBe('PUT');
-    req.flush({ status: 404, statusText: 'Not Found' });
+    req.flush({status: 404, statusText: 'Not Found'});
   });
 
   it('should delete a task by id', () => {
-    service.delete(1).subscribe((tasks: any) => {
+    service.delete(1).subscribe(() => {
     });
 
     const req = httpMock.expectOne(`${apiTasksUrl}/1`);
@@ -154,6 +156,6 @@ describe('TaskDataService', () => {
 
     const req = httpMock.expectOne(`${apiTasksUrl}/100`);
     expect(req.request.method).toBe('DELETE');
-    req.flush({ status: 404, statusText: 'Not Found' });
+    req.flush({status: 404, statusText: 'Not Found'});
   });
 });

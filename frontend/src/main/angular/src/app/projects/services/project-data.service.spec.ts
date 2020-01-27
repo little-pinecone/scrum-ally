@@ -3,55 +3,20 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { ProjectDataService } from './project-data.service';
 import { Project } from '../project';
-import { Page } from '../../pagination/page';
 import { Pageable } from '../../pagination/pageable';
-import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment.prod';
 import { SortableColumn } from 'src/app/sorting/sortable-column';
+import {Page} from "../../pagination/page";
 
 describe('ProjectDataService', () => {
   let injector: TestBed;
   let service: ProjectDataService;
   let httpMock: HttpTestingController;
-  let apiProjectsUrl = environment.apiUrl + '/projects';
-  let projectList = [
-    {"name":"test1", "description":"test1", "id":1},
-    {"name":"test2", "id":2}
-  ];
-  let page: Page<Project> = new Page();
-  let pageable: Pageable = new Pageable();
-  let sortableColumn: SortableColumn = null;
-  let paginatedProjects = {
-    "content": [
-      {
-        "name": "test_name_1",
-        "description": "test_description",
-        "id": 1
-      }
-    ],
-    "pageable": {
-      "sort": {
-        "sorted": false,
-        "unsorted": true
-      },
-      "pageSize": 20,
-      "pageNumber": 0,
-      "offset": 0,
-      "unpaged": false,
-      "paged": true
-    },
-    "last": true,
-    "totalElements": 1,
-    "totalPages": 1,
-    "first": true,
-    "sort": {
-      "sorted": false,
-      "unsorted": true
-    },
-    "numberOfElements": 1,
-    "size": 20,
-    "number": 0
-  }
+  let apiProjectsUrl: String;
+  let projectList: Array<any>;
+  let pageable: Pageable;
+  let sortableColumn: SortableColumn;
+  let paginatedProjects: Page<any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -61,6 +26,44 @@ describe('ProjectDataService', () => {
     injector = getTestBed();
     service = injector.get(ProjectDataService);
     httpMock = injector.get(HttpTestingController);
+    apiProjectsUrl = environment.apiUrl + '/projects';
+    projectList = [
+      {"name":"test1", "description":"test1", "id":1},
+      {"name":"test2", "id":2}
+    ];
+    pageable = new Pageable();
+    sortableColumn = null;
+    paginatedProjects = {
+      "content": [
+        {
+          "name": "test_name_1",
+          "description": "test_description",
+          "id": 1
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "sorted": false,
+          "unsorted": true
+        },
+        "pageSize": 20,
+        "pageNumber": 0,
+        "offset": 0,
+        "unpaged": false,
+        "paged": true
+      },
+      "last": true,
+      "totalElements": 1,
+      "totalPages": 1,
+      "first": true,
+      "sort": {
+        "sorted": false,
+        "unsorted": true
+      },
+      "numberOfElements": 1,
+      "size": 20,
+      "number": 0
+    }
   });
 
   afterEach(() => {
@@ -104,7 +107,7 @@ describe('ProjectDataService', () => {
 
   it('should retrieve page with paginated projects', () => {
     pageable.pageNumber = 1;
-    pageable.pageSize = 4
+    pageable.pageSize = 4;
     service.getPage(pageable, sortableColumn).subscribe((projects: any) => {
       expect(projects).toEqual(paginatedProjects);
     });
@@ -159,7 +162,7 @@ describe('ProjectDataService', () => {
   });
 
   it('should delete a project by id', () => {
-    service.delete(1).subscribe((projects: any) => {
+    service.delete(1).subscribe(() => {
     });
 
     const req = httpMock.expectOne(`${apiProjectsUrl}/1`);

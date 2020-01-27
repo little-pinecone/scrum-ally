@@ -1,13 +1,12 @@
-import { TestBed, inject, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
-import { environment } from '../../../environments/environment';
 
 import { AuthService } from './auth.service';
 import { Credentials } from 'src/app/auth/credentials';
 import { TokenService } from 'src/app/auth/services/token.service';
 import { Observable } from 'rxjs';
+import {HttpResponse} from "@angular/common/http";
 
 describe('AuthService', () => {
   let injector: TestBed;
@@ -48,7 +47,7 @@ describe('AuthService', () => {
   });
 
   it('should return true when user is logged in', () => {
-    spyOn(tokenService, 'getResponseHeaders').and.returnValue(new Observable<string>());
+    spyOn(tokenService, 'getResponseHeaders').and.returnValue(new Observable<HttpResponse<Object>>());
     service.login(new Credentials('',''));
     expect(tokenService.getResponseHeaders).toHaveBeenCalled();
   });
