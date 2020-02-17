@@ -1,7 +1,12 @@
 package in.keepgrowing.scrumally.projects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.projects.model.Project;
+import in.keepgrowing.scrumally.security.CustomUserDetailsService;
+import in.keepgrowing.scrumally.security.TokenProperties;
+import in.keepgrowing.scrumally.user.UserService;
+import in.keepgrowing.scrumally.user.model.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -24,13 +33,15 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = ProjectController.class, secure = false)
-@EnableSpringDataWebSupport
+@WebMvcTest(value = ProjectController.class)
+@Import({TokenProperties.class, BCryptPasswordEncoder.class, CustomUserDetailsService.class, SecurityConfig.class})
+//@EnableSpringDataWebSupport
 public class ProjectControllerTest {
 
     private final String apiPath = "/api/projects";
@@ -40,9 +51,16 @@ public class ProjectControllerTest {
     private MockMvc mvc;
     private JacksonTester<Project> projectJacksonTester;
 
+    @Autowired
+    private WebApplicationContext applicationContext;
+
     @Before
     public void setUp() {
         JacksonTester.initFields(this, new ObjectMapper());
+        mvc = MockMvcBuilders
+                .webAppContextSetup(applicationContext)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
