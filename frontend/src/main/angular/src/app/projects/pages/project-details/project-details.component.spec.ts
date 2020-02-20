@@ -5,8 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProjectDetailsComponent } from './project-details.component';
 import { Component, Input } from '@angular/core';
 import { Project } from '../../project';
-import { ModalDialogModule } from 'ngx-modal-dialog';
-import { ModalDialogInstanceService } from 'ngx-modal-dialog/src/modal-dialog-instance.service';
+import { ModalDialogModule, ModalDialogInstanceService } from '@preeco-privacy/ngx-modal-dialog';
 
 @Component({selector: 'app-tasks-table', template: ''})
 class TasksTableComponent {

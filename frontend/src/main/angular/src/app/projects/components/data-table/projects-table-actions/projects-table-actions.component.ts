@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { Project } from '../../../project';
 import { ProjectDataService } from '../../../services/project-data.service'
-import { ModalDialogService } from 'ngx-modal-dialog';
+import { ModalDialogService } from '@preeco-privacy/ngx-modal-dialog';
 import { ConfirmationModalComponent } from '../../../../modals/confirmation-modal/confirmation-modal.component';
 
 @Component({

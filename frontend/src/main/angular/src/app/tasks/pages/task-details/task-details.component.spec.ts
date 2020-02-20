@@ -3,8 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { TaskDetailsComponent } from './task-details.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ModalDialogInstanceService } from 'ngx-modal-dialog/src/modal-dialog-instance.service';
-import { ModalDialogModule } from 'ngx-modal-dialog';
+import { ModalDialogInstanceService, ModalDialogModule } from "@preeco-privacy/ngx-modal-dialog";
 
 describe('TaskDetailsComponent', () => {
   let component: TaskDetailsComponent;

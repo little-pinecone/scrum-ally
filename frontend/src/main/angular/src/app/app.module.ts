@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { ModalDialogModule } from 'ngx-modal-dialog';
 import { AppRoutingModule } from './app-routing.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -36,6 +35,7 @@ import { TasksTableHeaderComponent } from './tasks/components/tasks-table-header
 import { TaskDetailsComponent } from './tasks/pages/task-details/task-details.component';
 import { LoginComponent } from './auth/components/login/login.component';
 import { SortableHeadersComponent } from './sorting/components/sortable-headers/sortable-headers.component';
+import { ModalDialogModule } from "@preeco-privacy/ngx-modal-dialog";
 
 @NgModule({
   declarations: [

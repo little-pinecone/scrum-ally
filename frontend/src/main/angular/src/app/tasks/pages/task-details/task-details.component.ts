@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Task } from '../../task';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskDataService } from 'src/app/tasks/services/task-data.service';
-import { ModalDialogService } from 'ngx-modal-dialog';
+import { ModalDialogService } from '@preeco-privacy/ngx-modal-dialog';
 import { ConfirmationModalComponent } from '../../../modals/confirmation-modal/confirmation-modal.component';
 
 @Component({

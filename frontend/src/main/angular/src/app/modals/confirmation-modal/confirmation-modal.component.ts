@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { ModalDialogService, IModalDialog, IModalDialogOptions, IModalDialogButton } from 'ngx-modal-dialog';
+import { Component } from '@angular/core';
+import { IModalDialog, IModalDialogOptions, IModalDialogButton } from '@preeco-privacy/ngx-modal-dialog';
 import { ComponentRef } from '@angular/core';
 
 @Component({

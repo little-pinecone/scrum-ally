@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter, ViewContainerRef } from '@angular/core';
 import { Task } from '../../task';
 import { Router } from '@angular/router';
-import { ModalDialogService } from 'ngx-modal-dialog';
+import { ModalDialogService } from '@preeco-privacy/ngx-modal-dialog';
 import { TaskDataService } from '../../services/task-data.service';
 import { ConfirmationModalComponent } from '../../../modals/confirmation-modal/confirmation-modal.component';
 

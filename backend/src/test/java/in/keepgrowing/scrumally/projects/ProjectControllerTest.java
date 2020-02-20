@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -41,12 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = ProjectController.class)
 @Import({TokenProperties.class, BCryptPasswordEncoder.class, CustomUserDetailsService.class, SecurityConfig.class})
-//@EnableSpringDataWebSupport
+@EnableSpringDataWebSupport
 public class ProjectControllerTest {
 
     private final String apiPath = "/api/projects";
     @MockBean
     private ProjectService projectService;
+    @MockBean
+    private UserService userService;
     @Autowired
     private MockMvc mvc;
     private JacksonTester<Project> projectJacksonTester;
@@ -64,6 +67,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void savesProject() throws Exception {
         Project project = createTestProject();
         given(projectService.saveProject(project))
@@ -77,6 +81,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void findsAllForCurrentUser() throws Exception {
         Project project = createTestProject();
         Page<Project> page = new PageImpl<>(Collections.singletonList(project));
@@ -90,6 +95,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void findsOneForCurrentUser() throws Exception {
         Project project = createTestProject();
         given(projectService.findOneForCurrentUser(1L))
@@ -102,6 +108,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void statusNotFoundWhenGettingNonExistingProject() throws Exception {
         given(projectService.findOneForCurrentUser(1L))
                 .willReturn(Optional.empty());
@@ -112,6 +119,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void updatesProject() throws Exception {
         Project project = createTestProject();
         given(projectService.updateProject(project, 1L))
@@ -125,6 +133,7 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void statusNotFoundWhenUpdatingNonExistingProject() throws Exception {
         Project project = createTestProject();
         given(projectService.updateProject(project, 1L))
@@ -137,13 +146,15 @@ public class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void deletesProjectById() throws Exception {
         mvc.perform(delete(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
-    @Test()
+    @Test
+    @WithMockUser(roles = "USER")
     public void statusNotFoundWhenDeletingNonExistingProject() throws Exception {
         willThrow(EmptyResultDataAccessException.class)
                 .given(projectService)
