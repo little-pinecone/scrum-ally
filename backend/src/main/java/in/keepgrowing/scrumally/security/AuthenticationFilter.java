@@ -1,21 +1,21 @@
 package in.keepgrowing.scrumally.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.keepgrowing.scrumally.user.model.UserCredentials;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import in.keepgrowing.scrumally.user.model.UserCredentials;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -23,14 +23,17 @@ import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final ObjectMapper objectMapper;
     private final AuthenticationManager authenticationManager;
     private final TokenProperties tokenProperties;
+    private final ObjectMapper objectMapper;
+    private final Clock clock;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProperties tokenProperties) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProperties tokenProperties,
+                                ObjectMapper objectMapper, Clock clock) {
         this.authenticationManager = authenticationManager;
         this.tokenProperties = tokenProperties;
-        objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
+        this.clock = clock;
         setLoginPath(tokenProperties);
     }
 
@@ -40,14 +43,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+    public Authentication
+    attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         try {
             UserCredentials credentials = getCredentials(request);
             UsernamePasswordAuthenticationToken token = createAuthenticationToken(credentials);
             return authenticationManager.authenticate(token);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UnreadableCredentialsException("Credentials could not be read", e);
         }
     }
 
@@ -72,7 +75,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     private String createToken(Authentication auth) {
-        long now = System.currentTimeMillis();
+        var now = clock.millis();
         List<String> authorities = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
