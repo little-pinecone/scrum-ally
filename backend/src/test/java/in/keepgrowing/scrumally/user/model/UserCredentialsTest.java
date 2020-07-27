@@ -23,5 +23,4 @@ class UserCredentialsTest {
         String actual = new UserCredentials("admin", "admin", "role").toString();
         assertEquals(expected, actual);
     }
-
 }

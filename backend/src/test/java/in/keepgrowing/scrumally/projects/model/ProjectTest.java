@@ -34,5 +34,4 @@ class ProjectTest {
     private Project getProject() {
         return new Project("name", "");
     }
-
 }
