@@ -48,8 +48,12 @@ public class ProjectMember {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ProjectMember member = (ProjectMember) o;
         return Objects.equals(id, member.id) &&
                 projectRole == member.projectRole;
