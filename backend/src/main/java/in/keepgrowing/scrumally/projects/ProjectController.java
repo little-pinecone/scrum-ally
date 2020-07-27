@@ -39,7 +39,7 @@ public class ProjectController {
     public ResponseEntity<Project> findOneForCurrentUser(@PathVariable Long projectId) {
         Optional<Project> project = projectService.findOneForCurrentUser(projectId);
 
-        return project.map((p) -> ResponseEntity.ok().body(p))
+        return project.map(p -> ResponseEntity.ok().body(p))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -47,7 +47,7 @@ public class ProjectController {
     public ResponseEntity<Project> updateProject(@RequestBody Project projectDetails, @PathVariable Long projectId) {
         Optional<Project> project = projectService.updateProject(projectDetails, projectId);
 
-        return project.map((p) -> ResponseEntity.ok().body(p))
+        return project.map(p -> ResponseEntity.ok().body(p))
                 .orElse(ResponseEntity.notFound().build());
     }
 

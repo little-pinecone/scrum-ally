@@ -1,31 +1,34 @@
 package in.keepgrowing.scrumally.tasks;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import in.keepgrowing.scrumally.projects.model.Project;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.Id;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @JsonTest
-public class TaskTest {
+class TaskTest {
 
     @Autowired
     private
     JacksonTester<Task> jacksonTester;
 
     @Test
-    public void serializesTaskWithProject() throws IOException {
+    void serializesTaskWithProject() throws IOException {
         Resource expectedJson = new ClassPathResource("serializedTask.json");
         JsonContent<Task> parsed = jacksonTester.write(getTask());
 
@@ -33,7 +36,7 @@ public class TaskTest {
     }
 
     @Test
-    public void deserializesTaskWithProject() throws IOException {
+    void deserializesTaskWithProject() throws IOException {
         Task expected = getTask();
         Task parsed = jacksonTester.parse(getSerializedTask()).getObject();
         assertEquals(expected, parsed);
@@ -48,5 +51,22 @@ public class TaskTest {
         Task task = new Task("name", "");
         task.setProjectFromId(1L);
         return task;
+    }
+
+    @Test
+    void equalsContract() {
+        EqualsVerifier.forClass(Task.class)
+                .withPrefabValues(Project.class, new Project("name1", ""),
+                        new Project("name2", ""))
+                .usingGetClass()
+                .withIgnoredAnnotations(Id.class)
+                .verify();
+    }
+
+    @Test
+    void convertsToString() {
+        String expected = "Task{id=null, name='name', description='', project=Project{id=1, name='null', " +
+                "description='null', members=[]}}";
+        assertEquals(expected, getTask().toString());
     }
 }

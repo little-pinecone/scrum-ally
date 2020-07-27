@@ -5,8 +5,8 @@ import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
+import in.keepgrowing.scrumally.security.WebSecurityExpression.UserUnauthorisedException;
 import in.keepgrowing.scrumally.user.UserService;
-import in.keepgrowing.scrumally.user.model.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,6 +78,19 @@ public class ProjectControllerTest {
                 .content(projectJacksonTester.write(project).getJson()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(project.getName())));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
+        Project project = createTestProject();
+        given(projectService.saveProject(project))
+                .willThrow(UserUnauthorisedException.class);
+
+        mvc.perform(post(apiPath)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(projectJacksonTester.write(project).getJson()))
+                .andExpect(status().isForbidden());
     }
 
     @Test
