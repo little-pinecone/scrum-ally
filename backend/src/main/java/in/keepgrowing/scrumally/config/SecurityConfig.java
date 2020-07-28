@@ -5,6 +5,7 @@ import in.keepgrowing.scrumally.security.AuthenticationFilter;
 import in.keepgrowing.scrumally.security.AuthorizationFilter;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -52,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManagerBean(), tokenProperties, objectMapper,
                         Clock.systemDefaultZone()))
-                .addFilterAfter(new AuthorizationFilter(tokenProperties), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new AuthorizationFilter(tokenProperties, Jwts.parser()),
+                        UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, tokenProperties.getLoginPath()).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users").permitAll()

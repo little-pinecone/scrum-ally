@@ -1,7 +1,7 @@
 package in.keepgrowing.scrumally.projects;
 
 import in.keepgrowing.scrumally.projects.model.Project;
-import in.keepgrowing.scrumally.security.WebSecurityExpression.UserUnauthorisedException;
+import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

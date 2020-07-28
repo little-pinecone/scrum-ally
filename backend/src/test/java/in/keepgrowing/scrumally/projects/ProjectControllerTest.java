@@ -5,7 +5,7 @@ import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
-import in.keepgrowing.scrumally.security.WebSecurityExpression.UserUnauthorisedException;
+import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
 import in.keepgrowing.scrumally.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
