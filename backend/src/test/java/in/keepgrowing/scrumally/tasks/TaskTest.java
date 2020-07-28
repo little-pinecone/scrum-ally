@@ -52,21 +52,4 @@ class TaskTest {
         task.setProjectFromId(1L);
         return task;
     }
-
-    @Test
-    void equalsContract() {
-        EqualsVerifier.forClass(Task.class)
-                .withPrefabValues(Project.class, new Project("name1", ""),
-                        new Project("name2", ""))
-                .usingGetClass()
-                .withIgnoredAnnotations(Id.class)
-                .verify();
-    }
-
-    @Test
-    void convertsToString() {
-        String expected = "Task{id=null, name='name', description='', project=Project{id=1, name='null', " +
-                "description='null', members=[]}}";
-        assertEquals(expected, getTask().toString());
-    }
 }

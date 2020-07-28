@@ -15,6 +15,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.Clock;
 import java.util.Collections;
 import java.util.Date;
@@ -84,7 +85,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + tokenProperties.getExpiration() * 1000))
-                .signWith(SignatureAlgorithm.HS512, tokenProperties.getSecret().getBytes())
+                .signWith(SignatureAlgorithm.HS512, tokenProperties.getSecret().getBytes(Charset.defaultCharset()))
                 .compact();
     }
 }

@@ -1,6 +1,8 @@
 package in.keepgrowing.scrumally.projects.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -8,10 +10,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Data
 public class Project {
 
     @Id
@@ -30,6 +32,7 @@ public class Project {
             mappedBy = "project")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotEmpty
+    @EqualsAndHashCode.Exclude
     @JsonIgnore
     private Set<ProjectMember> members;
 
@@ -52,51 +55,5 @@ public class Project {
     public void updateFrom(Project projectDetails) {
         name = projectDetails.name;
         description = projectDetails.description;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setMembers(Set<ProjectMember> members) {
-        this.members = members;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Project project = (Project) o;
-        return Objects.equals(id, project.id) &&
-                Objects.equals(name, project.name) &&
-                Objects.equals(description, project.description) &&
-                Objects.equals(members, project.members);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, members);
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", members=" + members +
-                '}';
     }
 }

@@ -1,9 +1,10 @@
 package in.keepgrowing.scrumally.projects;
 
 import in.keepgrowing.scrumally.projects.model.Project;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectDto;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectEntityDtoConverter;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,26 +12,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/projects", produces = "application/json")
 public class ProjectController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
-
     private final ProjectService projectService;
+    private final ProjectEntityDtoConverter entityDtoConverter;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, ProjectEntityDtoConverter entityDtoConverter) {
         this.projectService = projectService;
+        this.entityDtoConverter = entityDtoConverter;
     }
 
     @PostMapping
-    public ResponseEntity<Project> saveProject(@RequestBody Project project) {
+    public ResponseEntity<ProjectDto> saveProject(@RequestBody @Valid ProjectDto projectDto) {
         try {
-            return ResponseEntity.ok().body(projectService.saveProject(project));
+            Project project = entityDtoConverter.toEntity(projectDto);
+            project = projectService.saveProject(project);
+            return ResponseEntity.ok(entityDtoConverter.toDto(project));
         } catch (UserUnauthorisedException e) {
-            LOG.info("Unauthorised operation", e);
+            log.info("Unauthorised operation", e);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
@@ -49,11 +54,13 @@ public class ProjectController {
     }
 
     @PutMapping("{projectId}")
-    public ResponseEntity<Project> updateProject(@RequestBody Project projectDetails, @PathVariable Long projectId) {
-        Optional<Project> project = projectService.updateProject(projectDetails, projectId);
+    public ResponseEntity<ProjectDto> updateProject(@RequestBody ProjectDto projectDto, @PathVariable Long projectId) {
+        var project = entityDtoConverter.toEntity(projectDto);
 
-        return project.map(p -> ResponseEntity.ok().body(p))
-                .orElse(ResponseEntity.notFound().build());
+        return projectService.updateProject(project, projectId)
+                .map(entityDtoConverter::toDto)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{projectId}")
@@ -62,7 +69,7 @@ public class ProjectController {
             projectService.deleteProjectOwnedByCurrentUser(projectId);
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException ex) {
-            LOG.info(ex.getMessage(), ex);
+            log.info(ex.getMessage(), ex);
             return ResponseEntity.notFound().build();
         }
     }

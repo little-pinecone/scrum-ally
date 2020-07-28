@@ -3,6 +3,10 @@ package in.keepgrowing.scrumally.projects;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.projects.model.Project;
+import in.keepgrowing.scrumally.projects.model.ProjectRole;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectDto;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectEntityDtoConverter;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectMemberDto;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
@@ -29,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,13 +51,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProjectControllerTest {
 
     private final String apiPath = "/api/projects";
+
     @MockBean
     private ProjectService projectService;
+
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private ProjectEntityDtoConverter entityDtoConverter;
+
     @Autowired
     private MockMvc mvc;
-    private JacksonTester<Project> projectJacksonTester;
+
+    private JacksonTester<ProjectDto> projectJacksonTester;
 
     @Autowired
     private WebApplicationContext applicationContext;
@@ -69,27 +81,37 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void savesProject() throws Exception {
-        Project project = createTestProject();
+        var project = createTestProject();
+        var projectDto = createTestProjectDto();
+
+        given(entityDtoConverter.toEntity(projectDto))
+                .willReturn(project);
         given(projectService.saveProject(project))
                 .willReturn(project);
+        given(entityDtoConverter.toDto(project))
+                .willReturn(projectDto);
 
         mvc.perform(post(apiPath)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(project).getJson()))
+                .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(project.getName())));
+                .andExpect(jsonPath("$.name", is(projectDto.getName())));
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
-        Project project = createTestProject();
+        var project = createTestProject();
+        var projectDto = createTestProjectDto();
+
+        given(entityDtoConverter.toEntity(projectDto))
+                .willReturn(project);
         given(projectService.saveProject(project))
                 .willThrow(UserUnauthorisedException.class);
 
         mvc.perform(post(apiPath)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(project).getJson()))
+                .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isForbidden());
     }
 
@@ -134,13 +156,19 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void updatesProject() throws Exception {
-        Project project = createTestProject();
+        var project = createTestProject();
+        var projectDto = createTestProjectDto();
+
+        given(entityDtoConverter.toEntity(projectDto))
+                .willReturn(project);
         given(projectService.updateProject(project, 1L))
                 .willReturn(Optional.of(project));
+        given(entityDtoConverter.toDto(project))
+                .willReturn(projectDto);
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(project).getJson()))
+                .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(project.getName())));
     }
@@ -148,13 +176,15 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void statusNotFoundWhenUpdatingNonExistingProject() throws Exception {
-        Project project = createTestProject();
+        var project = createTestProject();
+        var projectDto = createTestProjectDto();
+
         given(projectService.updateProject(project, 1L))
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(project).getJson()))
+                .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isNotFound());
     }
 
@@ -179,6 +209,11 @@ public class ProjectControllerTest {
     }
 
     private Project createTestProject() {
-        return new Project("project_name", "");
+        return new Project("name", "");
+    }
+
+    private ProjectDto createTestProjectDto() {
+        Set<ProjectMemberDto> dtoMembers = Set.of(new ProjectMemberDto(null, null, ProjectRole.GUEST));
+        return new ProjectDto(3L, "name", "", dtoMembers);
     }
 }
