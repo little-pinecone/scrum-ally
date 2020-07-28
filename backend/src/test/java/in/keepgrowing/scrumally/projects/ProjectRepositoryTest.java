@@ -59,7 +59,7 @@ public class ProjectRepositoryTest {
         Page<Project> requestedPage = projectRepository.findAllForCurrentUser(getPageable());
 
         assertEquals(getExpectedPage(project).getContent(), requestedPage.getContent());
-        assertEquals(requestedPage.getNumberOfElements(), 1);
+        assertEquals(1, requestedPage.getNumberOfElements());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ProjectRepositoryTest {
         project.updateFrom(new Project("name", "description"));
         Optional<Project> requestedProject = projectRepository.findOneForCurrentUser(project.getId());
         assertTrue(requestedProject.isPresent());
-        assertEquals(requestedProject.get().getName(), "name");
+        assertEquals("name", requestedProject.get().getName());
     }
 
     @Test

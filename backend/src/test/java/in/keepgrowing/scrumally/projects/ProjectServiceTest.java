@@ -55,7 +55,7 @@ public class ProjectServiceTest {
                 .thenReturn(getExpectedPage(createTestProject()));
         Page<Project> requestedPage = projectService.findAllForCurrentUser(pageable);
 
-        assertEquals(requestedPage.getNumberOfElements(), 1);
+        assertEquals(1, requestedPage.getNumberOfElements());
         verify(projectRepository, times(1)).findAllForCurrentUser(pageable);
     }
 

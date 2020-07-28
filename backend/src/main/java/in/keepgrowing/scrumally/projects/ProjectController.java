@@ -2,6 +2,8 @@ package in.keepgrowing.scrumally.projects;
 
 import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,9 @@ import java.util.Optional;
 @RequestMapping(value = "api/projects", produces = "application/json")
 public class ProjectController {
 
-    private ProjectService projectService;
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
+
+    private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
@@ -26,6 +30,7 @@ public class ProjectController {
         try {
             return ResponseEntity.ok().body(projectService.saveProject(project));
         } catch (UserUnauthorisedException e) {
+            LOG.info("Unauthorised operation", e);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
@@ -53,10 +58,11 @@ public class ProjectController {
 
     @DeleteMapping("{projectId}")
     public ResponseEntity<Project> deleteProjectOwnedByCurrentUser(@PathVariable Long projectId) {
-        try{
+        try {
             projectService.deleteProjectOwnedByCurrentUser(projectId);
             return ResponseEntity.noContent().build();
-        } catch(EmptyResultDataAccessException ex) {
+        } catch (EmptyResultDataAccessException ex) {
+            LOG.info(ex.getMessage(), ex);
             return ResponseEntity.notFound().build();
         }
     }

@@ -59,7 +59,7 @@ public class TaskServiceTest {
                 .thenReturn(taskPage);
         Page<Task> tasksByProjectId = taskService.getTasksByProjectId(1L, pageable);
 
-        assertEquals(tasksByProjectId.getNumberOfElements(), 1);
+        assertEquals(1, tasksByProjectId.getNumberOfElements());
 
     }
 
@@ -81,7 +81,7 @@ public class TaskServiceTest {
                 .thenReturn(taskPage);
         Page<Task> tasks = taskRepository.findAll(pageable);
 
-        assertEquals(tasks.getNumberOfElements(), 1);
+        assertEquals(1, tasks.getNumberOfElements());
     }
 
     @Test

@@ -1,5 +1,7 @@
 package in.keepgrowing.scrumally.tasks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "api/tasks", produces = "application/json")
 public class TaskController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TaskController.class);
+
     private TaskService taskService;
 
     public TaskController(TaskService taskService) {
@@ -31,7 +36,7 @@ public class TaskController {
     public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
         Optional<Task> task = taskService.getTaskById(taskId);
 
-        return task.map((t) -> ResponseEntity.ok().body(t))
+        return task.map(t -> ResponseEntity.ok().body(t))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -39,16 +44,17 @@ public class TaskController {
     public ResponseEntity<Task> updateTask(@RequestBody Task taskDetails, @PathVariable Long taskId) {
         Optional<Task> task = taskService.updateTask(taskDetails, taskId);
 
-        return task.map((t) -> ResponseEntity.ok().body(t))
+        return task.map(t -> ResponseEntity.ok().body(t))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{taskId}")
     public ResponseEntity<Task> deleteTask(@PathVariable Long taskId) {
-        try{
+        try {
             taskService.deleteTaskById(taskId);
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
+            LOG.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
     }

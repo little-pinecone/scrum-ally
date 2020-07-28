@@ -6,7 +6,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccessPolicy {
+public final class AccessPolicy {
+
+    private AccessPolicy() {
+    }
 
     public static User getCurrentUser() throws UserUnauthorisedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
