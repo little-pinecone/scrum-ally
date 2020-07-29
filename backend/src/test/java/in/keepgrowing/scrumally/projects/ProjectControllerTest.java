@@ -131,6 +131,9 @@ public class ProjectControllerTest {
         Page<Project> page = new PageImpl<>(Collections.singletonList(project));
         given(projectService.findAllForCurrentUser(any()))
                 .willReturn(page);
+        var projectDto = createTestProjectDto();
+        given(entityDtoConverter.toDto(project))
+                .willReturn(projectDto);
 
         mvc.perform(get(apiPath)
                 .contentType(MediaType.APPLICATION_JSON))

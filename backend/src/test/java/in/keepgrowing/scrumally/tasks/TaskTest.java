@@ -1,7 +1,5 @@
 package in.keepgrowing.scrumally.tasks;
 
-import in.keepgrowing.scrumally.projects.model.Project;
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,7 +10,6 @@ import org.springframework.boot.test.json.JsonContent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import javax.persistence.Id;
 import java.io.IOException;
 import java.nio.file.Files;
 

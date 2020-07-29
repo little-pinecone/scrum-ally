@@ -40,8 +40,9 @@ public class ProjectController {
     }
 
     @GetMapping
-    public Page<Project> findAllForCurrentUser(Pageable pageable) {
-        return projectService.findAllForCurrentUser(pageable);
+    public Page<ProjectDto> findAllForCurrentUser(Pageable pageable) {
+        return projectService.findAllForCurrentUser(pageable)
+                .map(entityDtoConverter::toDto);
     }
 
     @GetMapping("{projectId}")
@@ -64,7 +65,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("{projectId}")
-    public ResponseEntity<Project> deleteProjectOwnedByCurrentUser(@PathVariable Long projectId) {
+    public ResponseEntity<Void> deleteProjectOwnedByCurrentUser(@PathVariable Long projectId) {
         try {
             projectService.deleteProjectOwnedByCurrentUser(projectId);
             return ResponseEntity.noContent().build();
