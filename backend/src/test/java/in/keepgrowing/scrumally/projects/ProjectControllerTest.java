@@ -98,6 +98,15 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.name", is(projectDto.getName())));
     }
 
+    private Project createTestProject() {
+        return new Project("name", "");
+    }
+
+    private ProjectDto createTestProjectDto() {
+        Set<ProjectMemberDto> dtoMembers = Set.of(new ProjectMemberDto(null, null, ProjectRole.GUEST));
+        return new ProjectDto(3L, "name", "", dtoMembers);
+    }
+
     @Test
     @WithMockUser(roles = "USER")
     public void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
@@ -132,14 +141,18 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void findsOneForCurrentUser() throws Exception {
-        Project project = createTestProject();
+        var project = createTestProject();
+        var projectDto = createTestProjectDto();
+
         given(projectService.findOneForCurrentUser(1L))
                 .willReturn(Optional.of(project));
+        given(entityDtoConverter.toDto(project))
+                .willReturn(projectDto);
 
         mvc.perform(get(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(project.getName())));
+                .andExpect(jsonPath("$.name", is(projectDto.getName())));
     }
 
     @Test
@@ -206,14 +219,5 @@ public class ProjectControllerTest {
         mvc.perform(delete(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-    }
-
-    private Project createTestProject() {
-        return new Project("name", "");
-    }
-
-    private ProjectDto createTestProjectDto() {
-        Set<ProjectMemberDto> dtoMembers = Set.of(new ProjectMemberDto(null, null, ProjectRole.GUEST));
-        return new ProjectDto(3L, "name", "", dtoMembers);
     }
 }

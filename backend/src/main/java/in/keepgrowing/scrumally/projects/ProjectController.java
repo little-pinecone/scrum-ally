@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -30,8 +29,8 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<ProjectDto> saveProject(@RequestBody @Valid ProjectDto projectDto) {
+        Project project = entityDtoConverter.toEntity(projectDto);
         try {
-            Project project = entityDtoConverter.toEntity(projectDto);
             project = projectService.saveProject(project);
             return ResponseEntity.ok(entityDtoConverter.toDto(project));
         } catch (UserUnauthorisedException e) {
@@ -46,15 +45,16 @@ public class ProjectController {
     }
 
     @GetMapping("{projectId}")
-    public ResponseEntity<Project> findOneForCurrentUser(@PathVariable Long projectId) {
-        Optional<Project> project = projectService.findOneForCurrentUser(projectId);
-
-        return project.map(p -> ResponseEntity.ok().body(p))
+    public ResponseEntity<ProjectDto> findOneForCurrentUser(@PathVariable Long projectId) {
+        return projectService.findOneForCurrentUser(projectId)
+                .map(entityDtoConverter::toDto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("{projectId}")
-    public ResponseEntity<ProjectDto> updateProject(@RequestBody ProjectDto projectDto, @PathVariable Long projectId) {
+    public ResponseEntity<ProjectDto> updateProject(@RequestBody @Valid ProjectDto projectDto,
+                                                    @PathVariable Long projectId) {
         var project = entityDtoConverter.toEntity(projectDto);
 
         return projectService.updateProject(project, projectId)
