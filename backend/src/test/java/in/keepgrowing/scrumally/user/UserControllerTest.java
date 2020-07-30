@@ -2,10 +2,15 @@ package in.keepgrowing.scrumally.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.keepgrowing.scrumally.config.SecurityConfig;
+import in.keepgrowing.scrumally.projects.model.ProjectRole;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectMemberDto;
 import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.user.model.User;
 import in.keepgrowing.scrumally.user.model.UserCredentials;
+import in.keepgrowing.scrumally.user.viewmodel.UserCredentialsDto;
+import in.keepgrowing.scrumally.user.viewmodel.UserDto;
+import in.keepgrowing.scrumally.user.viewmodel.UserEntityDtoConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -39,11 +45,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     private final String apiPath = "/api/users";
-    private JacksonTester<User> userJacksonTester;
+
+    private JacksonTester<UserDto> userJacksonTester;
+
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private UserEntityDtoConverter converter;
+
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private WebApplicationContext applicationContext;
 
@@ -58,36 +71,61 @@ public class UserControllerTest {
 
     @Test
     public void registersNewUser() throws Exception {
-        User user = createTestUser();
+        var user = createTestUser();
+        var dto = getUserDto();
+
+        given(converter.toEntity(dto))
+                .willReturn(user);
         given(userService.register(user))
                 .willReturn(user);
+        given(converter.toDto(user))
+                .willReturn(dto);
 
         mvc.perform(post(apiPath)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(userJacksonTester.write(user).getJson()))
+                .content(userJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userCredentials.username", is(user.getUserCredentials().getUsername())));
+                .andExpect(jsonPath("$.userCredentials.username", is(dto.getUserCredentials().getUsername())));
+    }
+
+    private User createTestUser() {
+        UserCredentials credentials = new UserCredentials("user", "start", "");
+        return new User(credentials);
+    }
+
+    private UserDto getUserDto() {
+        var credentials = new UserCredentialsDto("username", "password", "role");
+        return new UserDto(1L, credentials, getDtoMembers());
+    }
+
+    private Set<ProjectMemberDto> getDtoMembers() {
+        return Set.of(new ProjectMemberDto(null, 1L, ProjectRole.GUEST));
     }
 
     @WithMockUser(roles = "ADMIN")
     @Test
     public void updates() throws Exception {
-        User user = createTestUser();
+        var user = createTestUser();
+        var dto = getUserDto();
+
+        given(converter.toEntity(dto))
+                .willReturn(user);
         given(userService.update(user, 1L))
                 .willReturn(Optional.of(user));
+        given(converter.toDto(user))
+                .willReturn(dto);
 
         mvc.perform(put(apiPath + "/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(userJacksonTester.write(user).getJson()))
+                .content(userJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk());
     }
 
     @WithMockUser(roles = "USER")
     @Test
     public void updateGivesForbiddenStatusWhenGivenInvalidRole() throws Exception {
-
         mvc.perform(put(apiPath + "/1"))
                 .andExpect(status().isForbidden());
     }
@@ -101,18 +139,14 @@ public class UserControllerTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void statusNotFoundWhenUpdatingNonExistingUser() throws Exception {
+        var dto = getUserDto();
+
         given(userService.findByUsername("user"))
                 .willReturn(Optional.empty());
-        User user = createTestUser();
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(userJacksonTester.write(user).getJson()))
+                .content(userJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());
-    }
-
-    private User createTestUser() {
-        UserCredentials credentials = new UserCredentials("user", "start", "");
-        return new User(credentials);
     }
 }

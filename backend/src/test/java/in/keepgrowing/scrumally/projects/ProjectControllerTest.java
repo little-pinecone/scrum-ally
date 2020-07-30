@@ -7,6 +7,7 @@ import in.keepgrowing.scrumally.projects.model.ProjectRole;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectDto;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectEntityDtoConverter;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectMemberDto;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectWithMembersDto;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
@@ -64,6 +65,7 @@ public class ProjectControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    private JacksonTester<ProjectWithMembersDto> projectWithMembersJacksonTester;
     private JacksonTester<ProjectDto> projectJacksonTester;
 
     @Autowired
@@ -81,8 +83,8 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void savesProject() throws Exception {
-        var project = createTestProject();
-        var projectDto = createTestProjectDto();
+        var project = getProject();
+        var projectDto = getDto();
 
         given(entityDtoConverter.toEntity(projectDto))
                 .willReturn(project);
@@ -98,20 +100,19 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.name", is(projectDto.getName())));
     }
 
-    private Project createTestProject() {
+    private Project getProject() {
         return new Project("name", "");
     }
 
-    private ProjectDto createTestProjectDto() {
-        Set<ProjectMemberDto> dtoMembers = Set.of(new ProjectMemberDto(null, null, ProjectRole.GUEST));
-        return new ProjectDto(3L, "name", "", dtoMembers);
+    private ProjectDto getDto() {
+        return new ProjectDto(3L, "name", "");
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
-        var project = createTestProject();
-        var projectDto = createTestProjectDto();
+        var project = getProject();
+        var projectDto = getDto();
 
         given(entityDtoConverter.toEntity(projectDto))
                 .willReturn(project);
@@ -127,11 +128,11 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void findsAllForCurrentUser() throws Exception {
-        Project project = createTestProject();
+        Project project = getProject();
         Page<Project> page = new PageImpl<>(Collections.singletonList(project));
         given(projectService.findAllForCurrentUser(any()))
                 .willReturn(page);
-        var projectDto = createTestProjectDto();
+        var projectDto = getDto();
         given(entityDtoConverter.toDto(project))
                 .willReturn(projectDto);
 
@@ -144,18 +145,23 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void findsOneForCurrentUser() throws Exception {
-        var project = createTestProject();
-        var projectDto = createTestProjectDto();
+        var project = getProject();
+        var dto = getDtoWithMembers();
 
         given(projectService.findOneForCurrentUser(1L))
                 .willReturn(Optional.of(project));
-        given(entityDtoConverter.toDto(project))
-                .willReturn(projectDto);
+        given(entityDtoConverter.toDtoWithMembers(project))
+                .willReturn(dto);
 
         mvc.perform(get(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(projectDto.getName())));
+                .andExpect(jsonPath("$.name", is(dto.getName())));
+    }
+
+    private ProjectWithMembersDto getDtoWithMembers() {
+        Set<ProjectMemberDto> dtoMembers = Set.of(new ProjectMemberDto(null, null, ProjectRole.GUEST));
+        return new ProjectWithMembersDto(3L, "name", "", dtoMembers);
     }
 
     @Test
@@ -172,19 +178,19 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void updatesProject() throws Exception {
-        var project = createTestProject();
-        var projectDto = createTestProjectDto();
+        var project = getProject();
+        var dto = getDtoWithMembers();
 
-        given(entityDtoConverter.toEntity(projectDto))
+        given(entityDtoConverter.toEntityWithMembers(dto))
                 .willReturn(project);
         given(projectService.updateProject(project, 1L))
                 .willReturn(Optional.of(project));
-        given(entityDtoConverter.toDto(project))
-                .willReturn(projectDto);
+        given(entityDtoConverter.toDtoWithMembers(project))
+                .willReturn(dto);
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(projectDto).getJson()))
+                .content(projectWithMembersJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(project.getName())));
     }
@@ -192,15 +198,15 @@ public class ProjectControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void statusNotFoundWhenUpdatingNonExistingProject() throws Exception {
-        var project = createTestProject();
-        var projectDto = createTestProjectDto();
+        var project = getProject();
+        var dto = getDtoWithMembers();
 
         given(projectService.updateProject(project, 1L))
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(projectJacksonTester.write(projectDto).getJson()))
+                .content(projectWithMembersJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());
     }
 

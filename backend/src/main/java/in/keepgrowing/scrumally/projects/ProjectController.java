@@ -3,6 +3,7 @@ package in.keepgrowing.scrumally.projects;
 import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectDto;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectEntityDtoConverter;
+import in.keepgrowing.scrumally.projects.viewmodel.ProjectWithMembersDto;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -46,20 +47,20 @@ public class ProjectController {
     }
 
     @GetMapping("{projectId}")
-    public ResponseEntity<ProjectDto> findOneForCurrentUser(@PathVariable Long projectId) {
+    public ResponseEntity<ProjectWithMembersDto> findOneForCurrentUser(@PathVariable Long projectId) {
         return projectService.findOneForCurrentUser(projectId)
-                .map(converter::toDto)
+                .map(converter::toDtoWithMembers)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("{projectId}")
-    public ResponseEntity<ProjectDto> updateProject(@RequestBody @Valid ProjectDto projectDto,
+    public ResponseEntity<ProjectWithMembersDto> updateProject(@RequestBody @Valid ProjectWithMembersDto projectDto,
                                                     @PathVariable Long projectId) {
-        var project = converter.toEntity(projectDto);
+        var project = converter.toEntityWithMembers(projectDto);
 
         return projectService.updateProject(project, projectId)
-                .map(converter::toDto)
+                .map(converter::toDtoWithMembers)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

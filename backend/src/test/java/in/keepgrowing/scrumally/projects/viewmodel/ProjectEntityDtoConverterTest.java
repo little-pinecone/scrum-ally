@@ -13,8 +13,7 @@ import org.modelmapper.ModelMapper;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProjectEntityDtoConverterTest {
@@ -29,10 +28,10 @@ class ProjectEntityDtoConverterTest {
     }
 
     @Test
-    void shouldConvertEntityToDto() {
+    void shouldConvertEntityToDtoWithMembers() {
         var project = createTestProject();
         project.setMembers(getEntityMembers(project));
-        var projectDto = entityDtoConverter.toDto(project);
+        var projectDto = entityDtoConverter.toDtoWithMembers(project);
 
         assertAll(
                 () -> assertEquals("name", projectDto.getName()),
@@ -62,10 +61,23 @@ class ProjectEntityDtoConverterTest {
         return Set.of(new ProjectMemberDto(null, 1L, ProjectRole.GUEST));
     }
 
+
     @Test
-    void shouldConvertDtoToEntity() {
-        var projectDto = createTestProjectDto();
-        var project = entityDtoConverter.toEntity(projectDto);
+    void shouldConvertEntityToDto() {
+        var project = createTestProject();
+        var projectDto = entityDtoConverter.toDto(project);
+
+        assertAll(
+                () -> assertEquals("name", projectDto.getName()),
+                () -> assertEquals("description", projectDto.getDescription()),
+                () -> assertEquals(1L, projectDto.getId())
+        );
+    }
+
+    @Test
+    void shouldConvertDtoWithMembersToEntity() {
+        var dto = getDtoWithMembers();
+        var project = entityDtoConverter.toEntityWithMembers(dto);
 
         assertAll(
                 () -> assertEquals("dto_name", project.getName()),
@@ -75,10 +87,29 @@ class ProjectEntityDtoConverterTest {
         );
     }
 
-    private ProjectDto createTestProjectDto() {
-        var projectDto = new ProjectDto(3L, "dto_name", "dto_description", getDtoMembers());
-        projectDto.setId(3L);
-        projectDto.setMembers(getDtoMembers());
-        return projectDto;
+    private ProjectWithMembersDto getDtoWithMembers() {
+        var dto = new ProjectWithMembersDto(3L, "dto_name", "dto_description", getDtoMembers());
+        dto.setId(3L);
+        dto.setMembers(getDtoMembers());
+        return dto;
+    }
+
+    @Test
+    void shouldConvertDtoToEntity() {
+        var projectDto = getDto();
+        var project = entityDtoConverter.toEntity(projectDto);
+
+        assertAll(
+                () -> assertEquals("dto_name", project.getName()),
+                () -> assertEquals("dto_description", project.getDescription()),
+                () -> assertEquals(3L, project.getId()),
+                () -> assertEquals(Set.of(), project.getMembers())
+        );
+    }
+
+    private ProjectDto getDto() {
+        var dto = new ProjectDto(3L, "dto_name", "dto_description");
+        dto.setId(3L);
+        return dto;
     }
 }

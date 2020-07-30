@@ -15,7 +15,7 @@ public interface ProjectRepository extends PagingAndSortingRepository<Project, L
 
     @Query(value = "SELECT p" +
             " FROM Project p" +
-            " LEFT JOIN FETCH p.members m" +
+            " LEFT JOIN p.members m" +
             " LEFT JOIN m.user u" +
             " WHERE u.userCredentials.username = ?#{principal?.username}",
             countQuery = "SELECT COUNT(p)" +

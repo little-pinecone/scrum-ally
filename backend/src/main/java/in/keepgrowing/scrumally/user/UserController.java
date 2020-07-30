@@ -1,31 +1,38 @@
 package in.keepgrowing.scrumally.user;
 
-import in.keepgrowing.scrumally.user.model.User;
+import in.keepgrowing.scrumally.user.viewmodel.UserDto;
+import in.keepgrowing.scrumally.user.viewmodel.UserEntityDtoConverter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "api/users", produces = "application/json")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final UserEntityDtoConverter converter;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserEntityDtoConverter converter) {
         this.userService = userService;
+        this.converter = converter;
     }
 
     @PostMapping
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public ResponseEntity<UserDto> register(@RequestBody @Valid UserDto userDto) {
+        var user = converter.toEntity(userDto);
+        user = userService.register(user);
+        return ResponseEntity.ok(converter.toDto(user));
     }
 
     @PutMapping("{userId}")
-    public ResponseEntity<User> update(@RequestBody User userDetails, @PathVariable Long userId) {
-        Optional<User> user = userService.update(userDetails, userId);
+    public ResponseEntity<UserDto> update(@RequestBody @Valid UserDto userDetails, @PathVariable Long userId) {
+        var user = converter.toEntity(userDetails);
 
-        return user.map(ResponseEntity::ok)
+        return userService.update(user, userId)
+                .map(converter::toDto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 }
