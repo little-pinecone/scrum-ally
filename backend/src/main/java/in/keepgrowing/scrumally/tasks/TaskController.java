@@ -1,60 +1,66 @@
 package in.keepgrowing.scrumally.tasks;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import in.keepgrowing.scrumally.tasks.viewmodel.TaskDto;
+import in.keepgrowing.scrumally.tasks.viewmodel.TaskEntityDtoConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/tasks", produces = "application/json")
 public class TaskController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TaskController.class);
+    private final TaskEntityDtoConverter converter;
+    private final TaskService taskService;
 
-    private TaskService taskService;
-
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskEntityDtoConverter converter, TaskService taskService) {
+        this.converter = converter;
         this.taskService = taskService;
     }
 
     @PostMapping
-    public Task saveTask(@RequestBody Task task) {
-        return taskService.saveTask(task);
+    public ResponseEntity<TaskDto> saveTask(@RequestBody @Valid TaskDto taskDto) {
+        var task = converter.toEntity(taskDto);
+        task = taskService.saveTask(task);
+        return ResponseEntity.ok(converter.toDto(task));
     }
 
     @GetMapping
-    public Page<Task> getTasks(@RequestParam("project-id") Long projectId, Pageable pageable) {
-        return taskService.getTasksByProjectId(projectId, pageable);
+    public Page<TaskDto> getTasks(@RequestParam("project-id") Long projectId, Pageable pageable) {
+        return taskService.getTasksByProjectId(projectId, pageable).map(converter::toDto);
     }
 
     @GetMapping("{taskId}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
-        Optional<Task> task = taskService.getTaskById(taskId);
-
-        return task.map(t -> ResponseEntity.ok().body(t))
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long taskId) {
+        return taskService.getTaskById(taskId)
+                .map(converter::toDto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("{taskId}")
-    public ResponseEntity<Task> updateTask(@RequestBody Task taskDetails, @PathVariable Long taskId) {
-        Optional<Task> task = taskService.updateTask(taskDetails, taskId);
+    public ResponseEntity<TaskDto> updateTask(@RequestBody @Valid TaskDto taskDetails, @PathVariable Long taskId) {
+        var task = converter.toEntity(taskDetails);
 
-        return task.map(t -> ResponseEntity.ok().body(t))
+        return taskService.updateTask(task, taskId)
+                .map(converter::toDto)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{taskId}")
-    public ResponseEntity<Task> deleteTask(@PathVariable Long taskId) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         try {
             taskService.deleteTaskById(taskId);
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
-            LOG.info(e.getMessage(), e);
+            log.info(e.getMessage(), e);
             return ResponseEntity.notFound().build();
         }
     }

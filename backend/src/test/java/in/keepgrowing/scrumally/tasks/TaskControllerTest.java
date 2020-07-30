@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
+import in.keepgrowing.scrumally.tasks.viewmodel.TaskDto;
+import in.keepgrowing.scrumally.tasks.viewmodel.TaskEntityDtoConverter;
 import in.keepgrowing.scrumally.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +16,6 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
@@ -45,16 +46,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerTest {
 
     private final String apiPath = "/api/tasks";
+
     @MockBean
     private TaskService taskService;
+
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private TaskEntityDtoConverter converter;
+
     @Autowired
     private MockMvc mvc;
-    private JacksonTester<Task> taskJacksonTester;
 
     @Autowired
     private WebApplicationContext applicationContext;
+
+    private JacksonTester<TaskDto> taskJacksonTester;
 
     @Before
     public void setUp() {
@@ -68,48 +76,69 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void savesTask() throws Exception {
-        Task task = new Task("test_task", "");
-        task.setProjectFromId(1L);
+        var task = getTask();
+        var dto = getTaskDto();
+
+        given(converter.toEntity(dto))
+                .willReturn(task);
         given(taskService.saveTask(task))
                 .willReturn(task);
+        given(converter.toDto(task))
+                .willReturn(dto);
 
         mvc.perform(post(apiPath)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(taskJacksonTester.write(task).getJson()))
+                .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(task.getName())))
-                .andExpect(jsonPath("$.projectId").value(is(task.getProject().getId()), Long.class));
+                .andExpect(jsonPath("$.name", is(dto.getName())))
+                .andExpect(jsonPath("$.projectId").value(is(dto.getProjectId()), Long.class));
+    }
+
+    private Task getTask() {
+        var task = new Task("test_task", "");
+        task.setProjectFromId(1L);
+        return task;
+    }
+
+    private TaskDto getTaskDto() {
+        return new TaskDto(null, "test_task", "", 1L);
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void getsTasks() throws Exception {
-        Task task = new Task("test_task", "");
-        task.setProjectFromId(1L);
-        Page<Task> taskPage = new PageImpl<>(Collections.singletonList(task));
+        var task = getTask();
+        var dto = getTaskDto();
+        var taskPage = new PageImpl<>(Collections.singletonList(task));
+
         given(taskService.getTasksByProjectId(eq(1L), any()))
                 .willReturn(taskPage);
+        given(converter.toDto(task))
+                .willReturn(dto);
 
         mvc.perform(get(apiPath + "?project-id=1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].name", is(task.getName())))
-                .andExpect(jsonPath("$.content[0].projectId").value(is(task.getProject().getId()), Long.class));
+                .andExpect(jsonPath("$.content[0].name", is(dto.getName())))
+                .andExpect(jsonPath("$.content[0].projectId").value(is(dto.getProjectId()), Long.class));
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void getsTaskById() throws Exception {
-        Task task = new Task("test_task", "");
-        task.setProjectFromId(1L);
+        var task = getTask();
+        var dto = getTaskDto();
+
         given(taskService.getTaskById(1L))
                 .willReturn(Optional.of(task));
+        given(converter.toDto(task))
+                .willReturn(dto);
 
         mvc.perform(get(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(task.getName())))
-                .andExpect(jsonPath("$.projectId").value(is(task.getProject().getId()), Long.class));
+                .andExpect(jsonPath("$.name", is(dto.getName())))
+                .andExpect(jsonPath("$.projectId").value(is(dto.getProjectId()), Long.class));
     }
 
     @Test
@@ -126,29 +155,36 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void updatesTask() throws Exception {
-        Task task = new Task("test_task", "");
-        task.setProjectFromId(1L);
+        var task = getTask();
+        var dto = getTaskDto();
+
+        given(converter.toEntity(dto))
+                .willReturn(task);
         given(taskService.updateTask(task, 1L))
                 .willReturn(Optional.of(task));
+        given(converter.toDto(task))
+                .willReturn(dto);
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(taskJacksonTester.write(task).getJson()))
+                .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(task.getName())))
-                .andExpect(jsonPath("$.projectId").value(is(task.getProject().getId()), Long.class));
+                .andExpect(jsonPath("$.name", is(dto.getName())))
+                .andExpect(jsonPath("$.projectId").value(is(dto.getProjectId()), Long.class));
     }
 
     @Test
     @WithMockUser(roles = "USER")
     public void statusNotFoundWhenUpdatingNonExistingTask() throws Exception {
-        Task task = new Task("test_task", "");
+        var task = getTask();
+        var dto = getTaskDto();
+
         given(taskService.updateTask(task, 1L))
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(taskJacksonTester.write(task).getJson()))
+                .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());
     }
 

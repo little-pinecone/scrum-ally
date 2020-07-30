@@ -20,19 +20,19 @@ import javax.validation.Valid;
 public class ProjectController {
 
     private final ProjectService projectService;
-    private final ProjectEntityDtoConverter entityDtoConverter;
+    private final ProjectEntityDtoConverter converter;
 
-    public ProjectController(ProjectService projectService, ProjectEntityDtoConverter entityDtoConverter) {
+    public ProjectController(ProjectService projectService, ProjectEntityDtoConverter converter) {
         this.projectService = projectService;
-        this.entityDtoConverter = entityDtoConverter;
+        this.converter = converter;
     }
 
     @PostMapping
     public ResponseEntity<ProjectDto> saveProject(@RequestBody @Valid ProjectDto projectDto) {
-        Project project = entityDtoConverter.toEntity(projectDto);
+        Project project = converter.toEntity(projectDto);
         try {
             project = projectService.saveProject(project);
-            return ResponseEntity.ok(entityDtoConverter.toDto(project));
+            return ResponseEntity.ok(converter.toDto(project));
         } catch (UserUnauthorisedException e) {
             log.info("Unauthorised operation", e);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -42,13 +42,13 @@ public class ProjectController {
     @GetMapping
     public Page<ProjectDto> findAllForCurrentUser(Pageable pageable) {
         return projectService.findAllForCurrentUser(pageable)
-                .map(entityDtoConverter::toDto);
+                .map(converter::toDto);
     }
 
     @GetMapping("{projectId}")
     public ResponseEntity<ProjectDto> findOneForCurrentUser(@PathVariable Long projectId) {
         return projectService.findOneForCurrentUser(projectId)
-                .map(entityDtoConverter::toDto)
+                .map(converter::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -56,10 +56,10 @@ public class ProjectController {
     @PutMapping("{projectId}")
     public ResponseEntity<ProjectDto> updateProject(@RequestBody @Valid ProjectDto projectDto,
                                                     @PathVariable Long projectId) {
-        var project = entityDtoConverter.toEntity(projectDto);
+        var project = converter.toEntity(projectDto);
 
         return projectService.updateProject(project, projectId)
-                .map(entityDtoConverter::toDto)
+                .map(converter::toDto)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

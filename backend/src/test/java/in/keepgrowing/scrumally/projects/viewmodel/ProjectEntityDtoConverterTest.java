@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class ProjectEntityDtoConverterTest {
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    private static final ModelMapper modelMapper = new ModelMapper();
 
     private ProjectEntityDtoConverter entityDtoConverter;
 
