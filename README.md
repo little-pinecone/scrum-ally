@@ -32,6 +32,18 @@ You can build the application with:
 $ mvn clean install
 ```
 
+To run fronted separately, on `localhost:4200`, got to the `/frontend/src/main/angular` directory and run:
+```
+$ npm start
+```
+
+## Database
+Use the attached `docker-compose.yml` file and run:
+```
+$ docker-compose up -d
+```
+Use Flyway migrations, e.g. `backend/src/main/resources/db/migration/V1_2020_03_5.sql` to apply the proper db schema.
+
 ### Create a test user
 
 POST Endpoint:
