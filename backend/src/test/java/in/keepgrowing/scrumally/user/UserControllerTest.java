@@ -132,7 +132,8 @@ public class UserControllerTest {
 
     @Test
     public void updateGivesUnauthorisedStatusWhenUserNotAuthenticated() throws Exception {
-        mvc.perform(put(apiPath + "/1"))
+        mvc.perform(put(apiPath + "/1")
+                .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -145,6 +146,7 @@ public class UserControllerTest {
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());

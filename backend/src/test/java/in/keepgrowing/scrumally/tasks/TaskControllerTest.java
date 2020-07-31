@@ -34,6 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -87,6 +88,7 @@ public class TaskControllerTest {
                 .willReturn(dto);
 
         mvc.perform(post(apiPath)
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
@@ -166,6 +168,7 @@ public class TaskControllerTest {
                 .willReturn(dto);
 
         mvc.perform(put(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
@@ -183,6 +186,7 @@ public class TaskControllerTest {
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());
@@ -192,6 +196,7 @@ public class TaskControllerTest {
     @WithMockUser(roles = "USER")
     public void deletesTask() throws Exception {
         mvc.perform(delete(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -204,6 +209,7 @@ public class TaskControllerTest {
                 .deleteTaskById(1L);
 
         mvc.perform(delete(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

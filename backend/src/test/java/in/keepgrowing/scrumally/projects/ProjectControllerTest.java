@@ -40,6 +40,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -94,6 +95,7 @@ public class ProjectControllerTest {
                 .willReturn(projectDto);
 
         mvc.perform(post(apiPath)
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isOk())
@@ -120,6 +122,7 @@ public class ProjectControllerTest {
                 .willThrow(UserUnauthorisedException.class);
 
         mvc.perform(post(apiPath)
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectJacksonTester.write(projectDto).getJson()))
                 .andExpect(status().isForbidden());
@@ -189,6 +192,7 @@ public class ProjectControllerTest {
                 .willReturn(dto);
 
         mvc.perform(put(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectWithMembersJacksonTester.write(dto).getJson()))
                 .andExpect(status().isOk())
@@ -205,6 +209,7 @@ public class ProjectControllerTest {
                 .willReturn(Optional.empty());
 
         mvc.perform(put(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(projectWithMembersJacksonTester.write(dto).getJson()))
                 .andExpect(status().isNotFound());
@@ -214,6 +219,7 @@ public class ProjectControllerTest {
     @WithMockUser(roles = "USER")
     public void deletesProjectById() throws Exception {
         mvc.perform(delete(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -226,6 +232,7 @@ public class ProjectControllerTest {
                 .deleteProjectOwnedByCurrentUser(1L);
 
         mvc.perform(delete(apiPath + "/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
