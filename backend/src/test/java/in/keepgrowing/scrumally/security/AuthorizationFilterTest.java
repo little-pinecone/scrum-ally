@@ -72,7 +72,6 @@ class AuthorizationFilterTest {
 
     @Test
     void shouldLogExpiredJwtException() throws ServletException, IOException {
-
         when(tokenProperties.getPrefix())
                 .thenReturn(HEADER_PREFIX);
         when(tokenProperties.getSecret())

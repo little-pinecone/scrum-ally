@@ -3,18 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>in.keepgrowing</groupId>
+    <version>0.0.1-SNAPSHOT</version>
     <artifactId>backend</artifactId>
-
     <name>backend</name>
     <description>The backend project</description>
 
-    <parent>
-        <groupId>in.keepgrowing</groupId>
-        <artifactId>scrum-ally</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-
     <properties>
+        <java.version>11</java.version>
         <jacoco.version>0.8.5</jacoco.version>
         <modelmapper.version>2.3.0</modelmapper.version>
     </properties>

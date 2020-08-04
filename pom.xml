@@ -6,21 +6,9 @@
 	<groupId>in.keepgrowing</groupId>
 	<artifactId>scrum-ally</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
 	<name>scrum-ally</name>
 	<description>A modern application for project management in accordance with Scrum</description>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
-	<properties>
-		<java.version>11</java.version>
-	</properties>
+	<packaging>pom</packaging>
 
 	<modules>
 		<module>frontend</module>
