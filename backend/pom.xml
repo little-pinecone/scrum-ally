@@ -19,6 +19,9 @@
         <java.version>11</java.version>
         <jacoco.version>0.8.5</jacoco.version>
         <modelmapper.version>2.3.0</modelmapper.version>
+        <sonar.projectKey>little-pinecone_scrum-ally</sonar.projectKey>
+        <sonar.organization>keep-growing</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
