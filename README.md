@@ -16,6 +16,7 @@ This project is a multi-module app, built with Spring Boot and Angular. It can b
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=code_smells)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=sqale_index)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+![GitHub](https://img.shields.io/github/license/little-pinecone/scrum-ally)
 
 ## Overview and technical features
 
