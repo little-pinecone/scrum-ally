@@ -20,7 +20,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build and analyze
+    - name: Build frontend
+      run: mvn -B install --file frontend/pom.xml
+    - name: Build and analyze backend
       run: mvn -B verify sonar:sonar -P code-coverage --file backend/pom.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
