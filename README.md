@@ -5,6 +5,18 @@
 Scrum_ally is a web application designed for project management.
 This project is a multi-module app, built with Spring Boot and Angular. It can be built into a single jar file using Maven.
 
+## Backend analysis
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=alert_status)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=security_rating)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=bugs)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=coverage)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=code_smells)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=little-pinecone_scrum-ally&metric=sqale_index)](https://sonarcloud.io/dashboard?id=little-pinecone_scrum-ally)
+
 ## Overview and technical features
 
 ![dashboard](readme-images/dashboard-page.png)
