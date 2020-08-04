@@ -21,6 +21,6 @@ jobs:
       with:
         java-version: 11
     - name: Build and analyze
-      run: mvn -B verify sonar:sonar -P code-coverage
+      run: mvn -B verify sonar:sonar -P code-coverage --file backend/pom.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
