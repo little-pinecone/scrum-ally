@@ -26,3 +26,4 @@ jobs:
       run: mvn -B verify sonar:sonar -P code-coverage --file backend/pom.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
