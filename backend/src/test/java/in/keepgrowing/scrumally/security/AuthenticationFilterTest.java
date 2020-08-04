@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 class AuthenticationFilterTest {
 
     private final static LocalDate LOCAL_DATE = LocalDate.of(2000, Month.JANUARY, 1);
-    private final Clock clock = Clock.fixed(LOCAL_DATE.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+    private final Clock clock = Clock.fixed(LOCAL_DATE.atStartOfDay(ZoneId.of("GMT")).toInstant(),
             ZoneId.systemDefault());
 
     @Mock
@@ -119,8 +119,9 @@ class AuthenticationFilterTest {
                 .thenReturn("test");
 
         filter.successfulAuthentication(request, response, filterChain, authentication);
-        var val = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1lIiwiYXV0aG9yaXRpZXMiOlsidGVzdCJdLCJpYXQiOjk0NjY4MTIwMCwiZXhwIj" +
-                "o5NDY2ODEyMDF9.S8WGUAHCGMbvFcC4FsYjJ-7L98hJO4uWqp5oHeajNSHkKSFHU6IgrIO3ZNWnH6XMTfIzeoUeyO8pWwcOkXs9ZA";
+        var val = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuYW1lIiwiYXV0aG9yaXRpZXMiOlsidGVzdCJdLCJpYXQiOjk0NjY4NDgwMCwiZX" +
+                "hwIjo5NDY2ODQ4MDF9.VweBGRaaezHNpcFXVHYeYBMSC2BEABtHRaJr7QkwOUKEe6FllBRCjU35RpACnGaU" +
+                "-dExhUzodHu4mqNGOOSrLg";
 
         verify(response).addHeader("header", "prefix" + val);
     }
