@@ -90,7 +90,9 @@ $ ng test
 
 ## Sonarqube
 
-If you want to generate a SonarQube report locally, run:
+If you want to generate a SonarQube report locally:
+* [set up Sonar Qube](https://keepgrowing.in/tools/boost-project-quality-with-sonarqube-local-code-analysis/)
+* run:
 ```bash
 $ mvn verify sonar:sonar -Pcode-coverage
 ```
