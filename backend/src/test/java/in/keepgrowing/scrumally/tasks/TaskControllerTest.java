@@ -97,7 +97,7 @@ public class TaskControllerTest {
     }
 
     private Task getTask() {
-        var task = new Task("test_task", "");
+        var task = new Task("test_task", "", TaskPriority.CRITICAL);
         task.setProjectFromId(1L);
         return task;
     }

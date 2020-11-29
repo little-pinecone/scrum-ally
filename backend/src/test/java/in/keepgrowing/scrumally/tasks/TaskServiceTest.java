@@ -41,7 +41,7 @@ public class TaskServiceTest {
         when(projectRepository.findById(projectId))
                 .thenReturn(Optional.of(project));
 
-        Task task = new Task("test_task", "");
+        Task task = new Task("test_task", "", TaskPriority.LOW);
         task.setProjectFromId(projectId);
         when(taskRepository.save(task))
                 .thenReturn(task);
@@ -52,7 +52,7 @@ public class TaskServiceTest {
 
     @Test
     public void getsTasksByProjectId() {
-        Task task = new Task("test_task", "");
+        Task task = new Task("test_task", "", TaskPriority.LOW);
         Page<Task> taskPage = new PageImpl<>(Collections.singletonList(task));
         Pageable pageable = this.createPageable();
         when(taskRepository.findByProjectId(1L, pageable))
@@ -74,7 +74,7 @@ public class TaskServiceTest {
 
     @Test
     public void getsPagedTasks() {
-        Task task = new Task("test_task", "");
+        Task task = new Task("test_task", "", TaskPriority.LOW);
         Page<Task> taskPage = new PageImpl<>(Collections.singletonList(task));
         Pageable pageable = this.createPageable();
         when(taskRepository.findAll(pageable))
@@ -86,7 +86,7 @@ public class TaskServiceTest {
 
     @Test
     public void getsTaskById() {
-        Task task = new Task("test_task", "");
+        Task task = new Task("test_task", "", TaskPriority.LOW);
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
         Optional<Task> optionalTask = taskService.getTaskById(1L);
@@ -104,10 +104,10 @@ public class TaskServiceTest {
 
     @Test
     public void updatesTask() {
-        Task task = new Task("test_task", "test_description");
+        Task task = new Task("test_task", "test_description", TaskPriority.CRITICAL);
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
-        Task updatedTask = new Task("updated_task", "");
+        Task updatedTask = new Task("updated_task", "", TaskPriority.NORMAL);
         when(taskRepository.save(task))
                 .thenReturn(updatedTask);
         Optional<Task> optionalTask = taskService.updateTask(updatedTask, 1L);
@@ -119,7 +119,7 @@ public class TaskServiceTest {
 
     @Test
     public void returnsEmptyOptionalWhenUpdatingNonExistingTask() {
-        Task updatedTask = new Task("test_task", "");
+        Task updatedTask = new Task("test_task", "", TaskPriority.LOW);
         Optional<Task> optionalTask = taskService.updateTask(updatedTask, 1L);
 
         assertFalse(optionalTask.isPresent());

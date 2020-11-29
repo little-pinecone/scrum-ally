@@ -57,7 +57,17 @@ Use the attached `docker-compose.yml` file and run:
 ```
 $ docker-compose up -d
 ```
-Use Flyway migrations, e.g. `backend/src/main/resources/db/migration/V1_2020_03_5.sql` to apply the proper db schema.
+
+### Migrations
+
+* Migrations are executed by Flyway.
+* An example file: `backend/src/main/resources/db/migration/V1_2020_03_5.sql` will apply the first migration in project.
+* To generate an sql file based on the updated entities, run:
+```bash
+$ mvn test -Dspring.profiles.active=dbschema,development
+```
+
+
 
 ### Create a test user
 
