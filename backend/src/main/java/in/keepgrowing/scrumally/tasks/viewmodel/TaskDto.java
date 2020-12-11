@@ -1,5 +1,7 @@
 package in.keepgrowing.scrumally.tasks.viewmodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import in.keepgrowing.scrumally.tasks.TaskPriority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +21,7 @@ public class TaskDto {
     private String description;
 
     private Long projectId;
+
+    @JsonProperty("priority")
+    private TaskPriority taskPriority;
 }

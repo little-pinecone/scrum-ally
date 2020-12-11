@@ -103,7 +103,7 @@ public class TaskControllerTest {
     }
 
     private TaskDto getTaskDto() {
-        return new TaskDto(null, "test_task", "", 1L);
+        return new TaskDto(null, "test_task", "", 1L, TaskPriority.NORMAL);
     }
 
     @Test

@@ -56,6 +56,6 @@ class TaskEntityDtoConverterTest {
     }
 
     private TaskDto getTaskDto() {
-        return new TaskDto(1L, "task", "description", 2L);
+        return new TaskDto(1L, "task", "description", 2L, TaskPriority.NORMAL);
     }
 }

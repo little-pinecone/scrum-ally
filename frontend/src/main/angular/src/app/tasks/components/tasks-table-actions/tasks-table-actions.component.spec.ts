@@ -25,7 +25,7 @@ describe('TasksTableActionsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TasksTableActionsComponent);
     component = fixture.componentInstance;
-    component.task = {id:1, name: 'test1', description: '', projectId: 1};
+    component.task = {id:1, name: 'test1', description: '', projectId: 1, priority:'NORMAL'};
     fixture.detectChanges();
   });
 

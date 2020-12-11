@@ -104,7 +104,7 @@ If you want to generate a SonarQube report locally:
 * [set up Sonar Qube](https://keepgrowing.in/tools/boost-project-quality-with-sonarqube-local-code-analysis/)
 * run:
 ```bash
-$ mvn verify sonar:sonar -Pcode-coverage
+$ mvn clean verify sonar:sonar -Pcode-coverage
 ```
 
 ## API documentation
