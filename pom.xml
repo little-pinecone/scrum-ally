@@ -6,9 +6,9 @@
 	<groupId>in.keepgrowing</groupId>
 	<artifactId>scrum-ally</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>scrum-ally</name>
 	<description>A modern application for project management in accordance with Scrum</description>
-	<packaging>pom</packaging>
 
 	<modules>
 		<module>frontend</module>

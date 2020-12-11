@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ScrumAllyApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ScrumAllyApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ScrumAllyApplication.class, args);
+    }
 }

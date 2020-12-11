@@ -1,0 +1,1 @@
+alter table task add column task_priority varchar(255) not null

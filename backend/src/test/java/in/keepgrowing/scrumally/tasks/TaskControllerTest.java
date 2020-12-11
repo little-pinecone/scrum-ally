@@ -97,13 +97,13 @@ public class TaskControllerTest {
     }
 
     private Task getTask() {
-        var task = new Task("test_task", "");
+        var task = new Task("test_task", "", TaskPriority.CRITICAL);
         task.setProjectFromId(1L);
         return task;
     }
 
     private TaskDto getTaskDto() {
-        return new TaskDto(null, "test_task", "", 1L);
+        return new TaskDto(null, "test_task", "", 1L, TaskPriority.NORMAL);
     }
 
     @Test

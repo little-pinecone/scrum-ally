@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Import(SecurityEvaluationContextConfig.class)
-public class ProjectRepositoryTest {
+public class ProjectRepositoryIT {
 
     @Autowired
     private ProjectRepository projectRepository;

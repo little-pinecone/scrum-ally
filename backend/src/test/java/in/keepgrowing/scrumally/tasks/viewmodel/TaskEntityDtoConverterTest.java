@@ -1,6 +1,7 @@
 package in.keepgrowing.scrumally.tasks.viewmodel;
 
 import in.keepgrowing.scrumally.tasks.Task;
+import in.keepgrowing.scrumally.tasks.TaskPriority;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ class TaskEntityDtoConverterTest {
     }
 
     private Task getTask() {
-        var task = new Task("task", "description");
+        var task = new Task("task", "description", TaskPriority.CRITICAL);
         task.setProjectFromId(1L);
         return task;
     }
@@ -55,6 +56,6 @@ class TaskEntityDtoConverterTest {
     }
 
     private TaskDto getTaskDto() {
-        return new TaskDto(1L, "task", "description", 2L);
+        return new TaskDto(1L, "task", "description", 2L, TaskPriority.NORMAL);
     }
 }

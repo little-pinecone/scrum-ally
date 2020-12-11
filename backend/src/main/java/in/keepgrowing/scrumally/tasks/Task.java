@@ -23,6 +23,10 @@ public class Task {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskPriority taskPriority;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -33,14 +37,16 @@ public class Task {
     protected Task() {
     }
 
-    public Task(String name, String description) {
+    public Task(String name, String description, TaskPriority taskPriority) {
         this.name = name;
         this.description = description;
+        this.taskPriority = taskPriority;
     }
 
     public void updateFrom(Task taskDetails) {
         name = taskDetails.getName();
         description = taskDetails.getDescription();
+        taskPriority = taskDetails.getTaskPriority();
         project = taskDetails.getProject();
     }
 

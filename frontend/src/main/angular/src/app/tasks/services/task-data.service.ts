@@ -25,6 +25,7 @@ export class TaskDataService {
   public save(task: Task) {
     if(!task.id) {
       const url = `${this.tasksUrl}`;
+      task.priority = "NORMAL";
       return this.http.post<Task>(url, task, httpOptions);
     }
   }
@@ -34,12 +35,12 @@ export class TaskDataService {
     let url = this.tasksUrl
     + '?page=' + pageable.pageNumber
     + '&size=' + pageable.pageSize
-    + this.getSortParameters(sortableColumn)
+    + TaskDataService.getSortParameters(sortableColumn)
     + '&project-id=' + projectId;
     return this.http.get<Page<Task>>(url, httpOptions);
   }
 
-  private getSortParameters(sortableColumn: SortableColumn): string {
+  private static getSortParameters(sortableColumn: SortableColumn): string {
     if(sortableColumn == null) {
       return '&sort=id';
     }

@@ -31,7 +31,8 @@ describe('TaskDataService', () => {
       "name": "task",
       "description": "",
       "id": 1,
-      "projectId": 1
+      "projectId": 1,
+      priority: 'NORMAL'
     };
   });
 
