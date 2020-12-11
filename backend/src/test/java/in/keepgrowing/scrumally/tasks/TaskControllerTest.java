@@ -7,10 +7,10 @@ import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.tasks.viewmodel.TaskDto;
 import in.keepgrowing.scrumally.tasks.viewmodel.TaskEntityDtoConverter;
 import in.keepgrowing.scrumally.user.UserService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,7 +21,6 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -40,11 +39,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 @WebMvcTest(value = TaskController.class)
 @Import({TokenProperties.class, BCryptPasswordEncoder.class, CustomUserDetailsService.class, SecurityConfig.class})
 @EnableSpringDataWebSupport
-public class TaskControllerTest {
+class TaskControllerTest {
 
     private final String apiPath = "/api/tasks";
 
@@ -65,8 +64,8 @@ public class TaskControllerTest {
 
     private JacksonTester<TaskDto> taskJacksonTester;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         JacksonTester.initFields(this, new ObjectMapper());
         mvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
@@ -76,7 +75,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void savesTask() throws Exception {
+    void savesTask() throws Exception {
         var task = getTask();
         var dto = getTaskDto();
 
@@ -108,7 +107,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void getsTasks() throws Exception {
+    void getsTasks() throws Exception {
         var task = getTask();
         var dto = getTaskDto();
         var taskPage = new PageImpl<>(Collections.singletonList(task));
@@ -127,7 +126,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void getsTaskById() throws Exception {
+    void getsTaskById() throws Exception {
         var task = getTask();
         var dto = getTaskDto();
 
@@ -145,7 +144,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenGettingNonExistingTask() throws Exception {
+    void statusNotFoundWhenGettingNonExistingTask() throws Exception {
         given(taskService.getTaskById(1L))
                 .willReturn(Optional.empty());
 
@@ -156,7 +155,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void updatesTask() throws Exception {
+    void updatesTask() throws Exception {
         var task = getTask();
         var dto = getTaskDto();
 
@@ -178,7 +177,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenUpdatingNonExistingTask() throws Exception {
+    void statusNotFoundWhenUpdatingNonExistingTask() throws Exception {
         var task = getTask();
         var dto = getTaskDto();
 
@@ -194,7 +193,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void deletesTask() throws Exception {
+    void deletesTask() throws Exception {
         mvc.perform(delete(apiPath + "/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -203,7 +202,7 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenDeletingNonExistingTask() throws Exception {
+    void statusNotFoundWhenDeletingNonExistingTask() throws Exception {
         willThrow(EmptyResultDataAccessException.class)
                 .given(taskService)
                 .deleteTaskById(1L);

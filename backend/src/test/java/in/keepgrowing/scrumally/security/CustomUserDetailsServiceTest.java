@@ -3,35 +3,35 @@ package in.keepgrowing.scrumally.security;
 import in.keepgrowing.scrumally.user.UserService;
 import in.keepgrowing.scrumally.user.model.User;
 import in.keepgrowing.scrumally.user.model.UserCredentials;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CustomUserDetailsServiceTest {
+@ExtendWith(MockitoExtension.class)
+class CustomUserDetailsServiceTest {
 
     @Mock
     private UserService userService;
+
     private CustomUserDetailsService userDetailsService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         userDetailsService = new CustomUserDetailsService(userService);
     }
 
     @Test
-    public void loadsUserByUsername() {
+    void loadsUserByUsername() {
         UserCredentials credentials = new UserCredentials("user", "start", "ROLE_ADMIN");
         User user = new User(credentials);
         given(userService.findByUsername("user"))
@@ -43,13 +43,13 @@ public class CustomUserDetailsServiceTest {
         assertTrue(userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
     }
 
-    @Test(expected = UsernameNotFoundException.class)
-    public void throwsExceptionWhenLoadingNonExistingUser() {
-        userDetailsService.loadUserByUsername("user");
+    @Test
+    void throwsExceptionWhenLoadingNonExistingUser() {
+        assertThrows(UsernameNotFoundException.class, ()-> userDetailsService.loadUserByUsername("user"));
     }
 
     @Test
-    public void exceptionMessageContainsUsername() {
+    void exceptionMessageContainsUsername() {
         try {
             userDetailsService.loadUserByUsername("user1");
         } catch (UsernameNotFoundException e) {

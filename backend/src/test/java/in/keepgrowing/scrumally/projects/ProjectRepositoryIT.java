@@ -6,38 +6,37 @@ import in.keepgrowing.scrumally.projects.model.ProjectRole;
 import in.keepgrowing.scrumally.user.model.User;
 import in.keepgrowing.scrumally.user.model.UserCredentials;
 import in.keepgrowing.scrumally.user.model.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @Import(SecurityEvaluationContextConfig.class)
-public class ProjectRepositoryIT {
+class ProjectRepositoryIT {
 
     @Autowired
     private ProjectRepository projectRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private TestEntityManager entityManager;
 
     private User currentUser;
     private User otherUser;
 
-    @Before
-    public void setUsers() {
+    @BeforeEach
+    void setUsers() {
         currentUser = createUser("current");
         userRepository.save(currentUser);
         otherUser = createUser("other");
@@ -51,7 +50,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void findsAllForCurrentUser() {
+    void findsAllForCurrentUser() {
         Project project = createProjectWithMember(currentUser);
         createProjectWithMember(otherUser);
         Page<Project> requestedPage = projectRepository.findAllForCurrentUser(getPageable());
@@ -62,7 +61,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser("current")
-    public void findsAllSortedForCurrentUser() {
+    void findsAllSortedForCurrentUser() {
         List<Project> expectedPage = Arrays.asList(
                 createProjectWithMember(currentUser),
                 createProjectWithMember(currentUser));
@@ -73,7 +72,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser("current")
-    public void returnsEmptySecondPageWhenSizeExceedsProjectsAmount() {
+    void returnsEmptySecondPageWhenSizeExceedsProjectsAmount() {
         createProjectWithMember(currentUser);
         createProjectWithMember(currentUser);
         Page<Project> requestedPage = projectRepository.findAllForCurrentUser(getSecondPage());
@@ -83,7 +82,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void findsNoneIfCurrentUserDoesNotOwnAny() {
+    void findsNoneIfCurrentUserDoesNotOwnAny() {
         createProjectWithMember(otherUser);
         Page<Project> requestedPage = projectRepository.findAllForCurrentUser(getPageable());
 
@@ -92,7 +91,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void findsOneForCurrentUser() {
+    void findsOneForCurrentUser() {
         Project project = createProjectWithMember(currentUser);
         createProjectWithMember(otherUser);
         Optional<Project> requestedProject = projectRepository.findOneForCurrentUser(project.getId());
@@ -103,7 +102,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void findsNoneForCurrentUserWhenAskedForOtherUserProject() {
+    void findsNoneForCurrentUserWhenAskedForOtherUserProject() {
         Project project = createProjectWithMember(otherUser);
         Optional<Project> requestedProject = projectRepository.findOneForCurrentUser(project.getId());
 
@@ -112,7 +111,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void updatesProjectOwnedByCurrentUser() {
+    void updatesProjectOwnedByCurrentUser() {
         Project project = createProjectWithMember(currentUser);
         project.updateFrom(new Project("name", "description"));
         Optional<Project> requestedProject = projectRepository.findOneForCurrentUser(project.getId());
@@ -122,7 +121,7 @@ public class ProjectRepositoryIT {
 
     @Test
     @WithMockUser(username = "current")
-    public void deletesProjectOwnedByCurrentUser() {
+    void deletesProjectOwnedByCurrentUser() {
         Project project = createProjectWithMember(currentUser);
         assertTrue(projectRepository.findOneForCurrentUser(project.getId()).isPresent());
         projectRepository.deleteProjectOwnedByCurrentUser(project.getId());

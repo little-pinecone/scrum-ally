@@ -4,17 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.keepgrowing.scrumally.config.SecurityConfig;
 import in.keepgrowing.scrumally.projects.model.ProjectRole;
 import in.keepgrowing.scrumally.projects.viewmodel.ProjectMemberDto;
-import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.security.CustomUserDetailsService;
+import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.user.model.User;
 import in.keepgrowing.scrumally.user.model.UserCredentials;
 import in.keepgrowing.scrumally.user.viewmodel.UserCredentialsDto;
 import in.keepgrowing.scrumally.user.viewmodel.UserDto;
 import in.keepgrowing.scrumally.user.viewmodel.UserEntityDtoConverter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,10 +38,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 @WebMvcTest(UserController.class)
 @Import({TokenProperties.class, BCryptPasswordEncoder.class, CustomUserDetailsService.class, SecurityConfig.class})
-public class UserControllerTest {
+class UserControllerTest {
 
     private final String apiPath = "/api/users";
 
@@ -60,8 +59,8 @@ public class UserControllerTest {
     @Autowired
     private WebApplicationContext applicationContext;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         JacksonTester.initFields(this, new ObjectMapper());
         mvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
@@ -70,7 +69,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void registersNewUser() throws Exception {
+    void registersNewUser() throws Exception {
         var user = createTestUser();
         var dto = getUserDto();
 
@@ -105,7 +104,7 @@ public class UserControllerTest {
 
     @WithMockUser(roles = "ADMIN")
     @Test
-    public void updates() throws Exception {
+    void updates() throws Exception {
         var user = createTestUser();
         var dto = getUserDto();
 
@@ -125,13 +124,13 @@ public class UserControllerTest {
 
     @WithMockUser(roles = "USER")
     @Test
-    public void updateGivesForbiddenStatusWhenGivenInvalidRole() throws Exception {
+    void updateGivesForbiddenStatusWhenGivenInvalidRole() throws Exception {
         mvc.perform(put(apiPath + "/1"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void updateGivesUnauthorisedStatusWhenUserNotAuthenticated() throws Exception {
+    void updateGivesUnauthorisedStatusWhenUserNotAuthenticated() throws Exception {
         mvc.perform(put(apiPath + "/1")
                 .with(csrf()))
                 .andExpect(status().isUnauthorized());
@@ -139,7 +138,7 @@ public class UserControllerTest {
 
     @WithMockUser(roles = "ADMIN")
     @Test
-    public void statusNotFoundWhenUpdatingNonExistingUser() throws Exception {
+    void statusNotFoundWhenUpdatingNonExistingUser() throws Exception {
         var dto = getUserDto();
 
         given(userService.findByUsername("user"))

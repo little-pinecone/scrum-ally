@@ -3,34 +3,36 @@ package in.keepgrowing.scrumally.user;
 import in.keepgrowing.scrumally.user.model.User;
 import in.keepgrowing.scrumally.user.model.UserCredentials;
 import in.keepgrowing.scrumally.user.model.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UserServiceTest {
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private BCryptPasswordEncoder encoder;
+
     private UserService userService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         userService = new UserService(userRepository, encoder);
     }
 
     @Test
-    public void registersNewUser() {
+    void registersNewUser() {
         User user = createTestUser("");
         when(userRepository.save(user))
                 .thenReturn(user);
@@ -40,14 +42,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updates() {
+    void updates() {
         User user = createTestUser("");
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         User updatedUser = createTestUser("ROLE_ADMIN");
         when(userRepository.save(user))
                 .thenReturn(updatedUser);
-        Optional<User> optionalUser= userService.update(updatedUser, 1L);
+        Optional<User> optionalUser = userService.update(updatedUser, 1L);
 
         assertTrue(optionalUser.isPresent());
         assertEquals(optionalUser.get(), updatedUser);
@@ -60,14 +62,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void returnsEmptyOptionalWhenGettingNonExistingUser() {
+    void returnsEmptyOptionalWhenGettingNonExistingUser() {
         Optional<User> user = userRepository.findById(1L);
 
         assertFalse(user.isPresent());
     }
 
     @Test
-    public void returnsEmptyOptionalWhenSearchingForNullUsername() {
+    void returnsEmptyOptionalWhenSearchingForNullUsername() {
         Optional<User> optionalUser = userService.findByUsername(null);
 
         assertFalse(optionalUser.isPresent());

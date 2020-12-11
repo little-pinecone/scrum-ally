@@ -12,10 +12,10 @@ import in.keepgrowing.scrumally.security.CustomUserDetailsService;
 import in.keepgrowing.scrumally.security.TokenProperties;
 import in.keepgrowing.scrumally.security.websecurityexpression.UserUnauthorisedException;
 import in.keepgrowing.scrumally.user.UserService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +27,6 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,11 +45,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 @WebMvcTest(value = ProjectController.class)
 @Import({TokenProperties.class, BCryptPasswordEncoder.class, CustomUserDetailsService.class, SecurityConfig.class})
 @EnableSpringDataWebSupport
-public class ProjectControllerTest {
+class ProjectControllerTest {
 
     private final String apiPath = "/api/projects";
 
@@ -72,8 +71,8 @@ public class ProjectControllerTest {
     @Autowired
     private WebApplicationContext applicationContext;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         JacksonTester.initFields(this, new ObjectMapper());
         mvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
@@ -83,7 +82,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void savesProject() throws Exception {
+    void savesProject() throws Exception {
         var project = getProject();
         var projectDto = getDto();
 
@@ -112,7 +111,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
+    void returnsForbiddenStatusWhenUserIsUnauthorised() throws Exception {
         var project = getProject();
         var projectDto = getDto();
 
@@ -130,7 +129,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void findsAllForCurrentUser() throws Exception {
+    void findsAllForCurrentUser() throws Exception {
         Project project = getProject();
         Page<Project> page = new PageImpl<>(Collections.singletonList(project));
         given(projectService.findAllForCurrentUser(any()))
@@ -147,7 +146,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void findsOneForCurrentUser() throws Exception {
+    void findsOneForCurrentUser() throws Exception {
         var project = getProject();
         var dto = getDtoWithMembers();
 
@@ -169,7 +168,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenGettingNonExistingProject() throws Exception {
+    void statusNotFoundWhenGettingNonExistingProject() throws Exception {
         given(projectService.findOneForCurrentUser(1L))
                 .willReturn(Optional.empty());
 
@@ -180,7 +179,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void updatesProject() throws Exception {
+    void updatesProject() throws Exception {
         var project = getProject();
         var dto = getDtoWithMembers();
 
@@ -201,7 +200,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenUpdatingNonExistingProject() throws Exception {
+    void statusNotFoundWhenUpdatingNonExistingProject() throws Exception {
         var project = getProject();
         var dto = getDtoWithMembers();
 
@@ -217,7 +216,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void deletesProjectById() throws Exception {
+    void deletesProjectById() throws Exception {
         mvc.perform(delete(apiPath + "/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -226,7 +225,7 @@ public class ProjectControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void statusNotFoundWhenDeletingNonExistingProject() throws Exception {
+    void statusNotFoundWhenDeletingNonExistingProject() throws Exception {
         willThrow(EmptyResultDataAccessException.class)
                 .given(projectService)
                 .deleteProjectOwnedByCurrentUser(1L);

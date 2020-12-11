@@ -1,12 +1,12 @@
 package in.keepgrowing.scrumally.tasks;
 
-import in.keepgrowing.scrumally.projects.model.Project;
 import in.keepgrowing.scrumally.projects.ProjectRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import in.keepgrowing.scrumally.projects.model.Project;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,25 +17,27 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TaskServiceTest {
+@ExtendWith(MockitoExtension.class)
+class TaskServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+
     @Mock
     private TaskRepository taskRepository;
+
     private TaskService taskService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         taskService = new TaskService(taskRepository, projectRepository);
     }
 
     @Test
-    public void savesTask() {
+    void savesTask() {
         Project project = new Project("test_project", "");
         Long projectId = 1L;
         when(projectRepository.findById(projectId))
@@ -51,7 +53,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getsTasksByProjectId() {
+    void getsTasksByProjectId() {
         Task task = new Task("test_task", "", TaskPriority.LOW);
         Page<Task> taskPage = new PageImpl<>(Collections.singletonList(task));
         Pageable pageable = this.createPageable();
@@ -63,17 +65,17 @@ public class TaskServiceTest {
 
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void throwsExceptionWhenGettingTasksForNonExistingProject() {
+    @Test
+    void throwsExceptionWhenGettingTasksForNonExistingProject() {
         Pageable pageable = this.createPageable();
         doThrow(EntityNotFoundException.class)
                 .when(taskRepository).findByProjectId(1L, pageable);
 
-        taskService.getTasksByProjectId(1L, pageable);
+        assertThrows(EntityNotFoundException.class, () -> taskService.getTasksByProjectId(1L, pageable));
     }
 
     @Test
-    public void getsPagedTasks() {
+    void getsPagedTasks() {
         Task task = new Task("test_task", "", TaskPriority.LOW);
         Page<Task> taskPage = new PageImpl<>(Collections.singletonList(task));
         Pageable pageable = this.createPageable();
@@ -85,7 +87,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getsTaskById() {
+    void getsTaskById() {
         Task task = new Task("test_task", "", TaskPriority.LOW);
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
@@ -96,14 +98,14 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void returnsEmptyOptionalWhenGettingNonExistingTaskById() {
+    void returnsEmptyOptionalWhenGettingNonExistingTaskById() {
         Optional<Task> optionalTask = taskRepository.findById(1L);
 
         assertFalse(optionalTask.isPresent());
     }
 
     @Test
-    public void updatesTask() {
+    void updatesTask() {
         Task task = new Task("test_task", "test_description", TaskPriority.CRITICAL);
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
@@ -118,7 +120,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void returnsEmptyOptionalWhenUpdatingNonExistingTask() {
+    void returnsEmptyOptionalWhenUpdatingNonExistingTask() {
         Task updatedTask = new Task("test_task", "", TaskPriority.LOW);
         Optional<Task> optionalTask = taskService.updateTask(updatedTask, 1L);
 
@@ -126,17 +128,17 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void deletesTaskById() {
+    void deletesTaskById() {
         taskService.deleteTaskById(1L);
         verify(taskRepository, times(1)).deleteById(1L);
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
-    public void throwsExceptionWhenDeletingNonExistingTask() {
+    @Test
+    void throwsExceptionWhenDeletingNonExistingTask() {
         doThrow(EmptyResultDataAccessException.class)
                 .when(taskRepository).deleteById(1L);
 
-        taskService.deleteTaskById(1L);
+        assertThrows(EmptyResultDataAccessException.class, () -> taskService.deleteTaskById(1L));
     }
 
     private Pageable createPageable() {
