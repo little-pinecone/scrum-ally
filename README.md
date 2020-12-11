@@ -128,7 +128,7 @@ pm.globals.set('csrftoken', xsrfCookie.value);
 
 ## Built With
 
-* [Spring Boot 2.2.4](https://start.spring.io/)
+* [Spring Boot 2.4.0](https://start.spring.io/)
 * [Angular 10](https://angular.io/)
 * [Maven](https://maven.apache.org/)
 * [frontend-maven-plugin](https://github.com/eirslett/frontend-maven-plugin)
